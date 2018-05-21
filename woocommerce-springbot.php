@@ -6,7 +6,7 @@
 /*
 Plugin Name: WooCommerce Springbot Integration
 Description: Integration plugin between WooCommerce and Springbot
-Author: Evan Jacobs, Springbot
+Author: Springbot
 Version: 0.1
 Author URI: https://www.springbot.com
 */
@@ -49,7 +49,7 @@ if ( wsi_requirements_met() ) {
 	if ( class_exists( 'WooCommerce_Springbot_Integration' ) ) {
 		$GLOBALS['wsi'] = WooCommerce_Springbot_Integration::get_instance();
 		register_activation_hook( __FILE__, array( $GLOBALS['wsi'], 'activate' ) );
-		// register_deactivation_hook( __FILE__, array( $GLOBALS['wsi'], 'deactivate' ) );
+		register_deactivation_hook( __FILE__, array( $GLOBALS['wsi'], 'deactivate' ) );
 	}
 } else {
 	add_action( 'admin_notices', 'wsi_requirements_error' );
