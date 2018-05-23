@@ -1,22 +1,18 @@
 <?php
 
-if ( ! class_exists( 'WooCommerce_Springbot_Integration' ) ) {
+if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 	/**
 	 * Main / front controller class
 	 */
-	class WooCommerce_Springbot_Integration {
-
-		const PREFIX = 'wsi_';
-		const DEBUG_MODE = false;
-
-		private static $instance;
+	class Springbot_Activation {
 
 		/**
-		 * Constructor
+		 * Returns true if the instance has been registered with Springbot
 		 */
-		protected function __construct() {
-			self::$instance = $this;
+		public function is_registered()
+		{
+
 		}
 
 		/**
@@ -27,7 +23,7 @@ if ( ! class_exists( 'WooCommerce_Springbot_Integration' ) ) {
 
 			$storeUrl = get_permalink( woocommerce_get_page_id( 'shop' ) );
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
-			wp_remote_post( 'https://95ca1088.ngrok.io', array(
+			wp_remote_post( SPRINGBOT_WOO_ETL, array(
 				'method'      => 'POST',
 				'timeout'     => 45,
 				'redirection' => 5,
@@ -73,7 +69,6 @@ if ( ! class_exists( 'WooCommerce_Springbot_Integration' ) ) {
 		private function create_api_token() {
 			global $wpdb;
 
-			/* translators: 1: app name 2: scope 3: date 4: time */
 			$description = sprintf(
 				__( '%1$s - API %2$s (created on %3$s at %4$s).', 'woocommerce' ),
 				wc_clean( 'Springbot' ),
@@ -113,14 +108,6 @@ if ( ! class_exists( 'WooCommerce_Springbot_Integration' ) ) {
 			       . substr( $hash, 12, 4 ) . '-'
 			       . substr( $hash, 16, 4 ) . '-'
 			       . substr( $hash, 20, 12 );
-		}
-
-		public static function get_instance() {
-			if ( isset( self::$instance ) ) {
-				return self::$instance;
-			}
-
-			return new WooCommerce_Springbot_Integration();
 		}
 
 	}

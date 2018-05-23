@@ -4,53 +4,60 @@
  * @version 0.1
  */
 /*
-Plugin Name: WooCommerce Springbot Integration
+Plugin Name: Springbot WooCommerce Integration
 Description: Integration plugin between WooCommerce and Springbot
 Author: Springbot
 Version: 0.1
 Author URI: https://www.springbot.com
 */
 
+// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	die;
 }
 
-define( 'WSI_NAME', 'WooCommerce Springbot Integration' );
-define( 'WSI_REQUIRED_PHP_VERSION', '5.3' );
-define( 'WSI_REQUIRED_WP_VERSION', '3.1' );
+require_once( __DIR__ . '/config/springbot_config.php' );
 
-function wsi_requirements_met() {
-	global $wp_version;
-	if ( version_compare( PHP_VERSION, WSI_REQUIRED_PHP_VERSION, '<' ) ) {
-		return false;
-	}
-	if ( version_compare( $wp_version, WSI_REQUIRED_WP_VERSION, '<' ) ) {
-		return false;
+/**
+ * Check that requirements are met and register hooks/actions
+ */
+if ( springbot_requirements_met() ) {
+
+	if ( is_admin() ) {
+		require_once( __DIR__ . '/classes/springbot_activation.php' );
+		require_once( __DIR__ . '/classes/springbot_menu.php' );
+		if ( class_exists( 'Springbot_Activation' ) ) {
+			$springbot_activation = new Springbot_Activation;
+			register_activation_hook( __FILE__, array( $springbot_activation, 'activate' ) );
+			register_deactivation_hook( __FILE__, array( $springbot_activation, 'deactivate' ) );
+		}
+		if ( class_exists( 'Springbot_Menu' ) ) {
+			$springbot_menu = new Springbot_Menu;
+			add_action( 'admin_menu', array( $springbot_menu, 'add_springbot_menu' ) );
+		}
+	} else {
+		require_once( __DIR__ . '/classes/springbot_footer.php' );
+		if ( class_exists( 'Springbot_Footer' ) ) {
+			$springbot_footer = new Springbot_Footer;
+			add_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
+		}
 	}
 
-	return true;
+} else {
+	require_once( dirname( __FILE__ ) . '/views/springbot-requirements-error.php' );
 }
 
 /**
- * Prints an error that the system requirements weren't met.
+ * Check that the local system meets the minimum requirements for this plugin
  */
-function wsi_requirements_error() {
+function springbot_requirements_met() {
 	global $wp_version;
-	require_once( dirname( __FILE__ ) . '/views/requirements-error.php' );
+	if ( version_compare( PHP_VERSION, SPRINGBOT_REQUIRED_PHP_VERSION, '<' ) ) {
+		return false;
+	}
+	if ( version_compare( $wp_version, SPRINGBOT_REQUIRED_WP_VERSION, '<' ) ) {
+		return false;
+	}
+	return true;
 }
 
-/*
- * Check requirements and load main class
- * The main program needs to be in a separate file that only gets loaded if the plugin requirements are met. Otherwise
- * older PHP installations could crash when trying to parse it.
- */
-if ( wsi_requirements_met() ) {
-	require_once( __DIR__ . '/classes/wordpress_springbot_integration.php' );
-	if ( class_exists( 'WooCommerce_Springbot_Integration' ) ) {
-		$GLOBALS['wsi'] = WooCommerce_Springbot_Integration::get_instance();
-		register_activation_hook( __FILE__, array( $GLOBALS['wsi'], 'activate' ) );
-		register_deactivation_hook( __FILE__, array( $GLOBALS['wsi'], 'deactivate' ) );
-	}
-} else {
-	add_action( 'admin_notices', 'wsi_requirements_error' );
-}
