@@ -1,5 +1,6 @@
 <div class="error">
-    <p><?php echo SPRINGBOT_NAME; ?> error: Your environment doesn't meet all of the system requirements listed below.</p>
+    <p><?php echo SPRINGBOT_NAME; ?> error: Your environment doesn't meet all of the system requirements listed
+        below.</p>
 
     <ul class="ul-disc">
         <li>
@@ -8,8 +9,13 @@
         </li>
 
         <li>
-            <strong>WordPress <?php echo SPRINGBOT_REQUIRED_PHP_VERSION; ?>+</strong>
+            <strong>WordPress <?php echo SPRINGBOT_REQUIRED_WP_VERSION; ?>+</strong>
             <em>(You're running version <?php echo esc_html( $wp_version ); ?>)</em>
+        </li>
+
+        <li>
+            <strong>WooCommerce must be installed</strong>
+            <em>(WooCommerce installed: <?php echo springbot_check_if_woo_active() ? 'Yes' : 'No'; ?>)</em>
         </li>
 
     </ul>

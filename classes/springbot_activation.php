@@ -21,7 +21,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		public function activate( $network_wide ) {
 			$this->create_api_token();
 
-			$storeUrl = get_permalink( woocommerce_get_page_id( 'shop' ) );
+			$store_url = get_permalink( woocommerce_get_page_id( 'shop' ) );
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
 			wp_remote_post( SPRINGBOT_WOO_ETL, array(
 				'method'      => 'POST',
@@ -38,10 +38,10 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 							'guid'                   => $this->generate_guid(),
 							'name'                   => get_bloginfo( 'name' ),
 							'code'                   => 'english-na',
-							'url'                    => $storeUrl,
+							'url'                    => $store_url,
 							'enabled'                => true,
-							'secure_url'             => $storeUrl,
-							'media_url'              => $storeUrl,
+							'secure_url'             => $store_url,
+							'media_url'              => $store_url,
 							'web_id'                 => 1,
 							'store_mail_address'     => '123 Fake St',
 							'customer_service_email' => get_bloginfo( 'admin_email' ),
