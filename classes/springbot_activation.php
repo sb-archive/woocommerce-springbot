@@ -9,27 +9,28 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 		/**
 		 * Returns true if the instance has been registered with Springbot
+		 *
+		 * @return bool
 		 */
 		public function is_registered() {
+			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+				return (bool) get_user_meta( $user->ID, 'springbot_store_id' );
+			}
 
-		}
-
-		/**
-		 * @param bool $network_wide
-		 */
-		public function activate( $network_wide ) {
-
+			return false;
 		}
 
 		/**
 		 * @param string $email
 		 * @param string $password
+		 *
+		 * @return int
 		 */
 		public function register( $email, $password ) {
 			$store_url = get_site_url();
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
 			$registration_url = SPRINGBOT_WOO_ETL . '/api/v1/woocommerce/create';
-			$response = wp_remote_post( $registration_url, array(
+			$response         = wp_remote_post( $registration_url, array(
 				'method'      => 'POST',
 				'timeout'     => 45,
 				'redirection' => 5,
@@ -43,7 +44,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 							'instance_id'            => null,
 							'guid'                   => $this->generate_guid(),
 							'name'                   => get_bloginfo( 'name' ),
-							'code'                   => 'english-na',
+							'code'                   => $this->normalize( get_bloginfo( 'name' ) ),
 							'url'                    => $store_url,
 							'enabled'                => true,
 							'secure_url'             => $store_url,
@@ -77,14 +78,38 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 			if ( is_wp_error( $response ) ) {
 				$error_message = $response->get_error_message();
-				error_log("Error during Springbot registration: {$error_message}");
+				error_log( "Error during Springbot registration: {$error_message}" );
+
 				return 500;
 			} else {
+				$decoded = json_decode( $response['body'], true );
+				foreach ( $decoded['stores'] as $guid => $store ) {
+					$this->save_springbot_data( $decoded['security_token'], $guid, $store['springbot_store_id'] );
+				}
+
 				return $response['response']['code'];
 			}
 
 		}
 
+		/**
+		 * @param $securityToken
+		 * @param $guid
+		 * @param $springbotStoreId
+		 *
+		 * @return bool
+		 */
+		private function save_springbot_data( $securityToken, $guid, $springbotStoreId ) {
+			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+				update_user_meta( $user->ID, 'springbot_security_token', $securityToken );
+				update_user_meta( $user->ID, 'springbot_guid', $guid );
+				update_user_meta( $user->ID, 'springbot_store_id', $springbotStoreId );
+
+				return true;
+			}
+
+			return false;
+		}
 
 		/**
 		 * Create an API token (key + secret) to send to the ETL
@@ -98,7 +123,13 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				date_i18n( wc_date_format() ),
 				date_i18n( wc_time_format() )
 			);
-			$user        = wp_get_current_user();
+
+			$user = get_user_by( 'user_login', 'springbot' );
+			if ( $user ) {
+				$userId = $user->ID;
+			} else {
+				$userId = wp_create_user( 'springbot', $this->random_password(), 'woocommerce@springbot.com' );
+			}
 
 			// Created API keys.
 			$consumer_key    = 'ck_' . wc_rand_hash();
@@ -107,7 +138,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 			$wpdb->insert(
 				$wpdb->prefix . 'woocommerce_api_keys',
 				array(
-					'user_id'         => $user->ID,
+					'user_id'         => $userId,
 					'description'     => $description,
 					'permissions'     => 'read_write',
 					'consumer_key'    => wc_api_hash( $consumer_key ),
@@ -131,6 +162,36 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 			       . substr( $hash, 12, 4 ) . '-'
 			       . substr( $hash, 16, 4 ) . '-'
 			       . substr( $hash, 20, 12 );
+		}
+
+		/**
+		 * Generate a random password for our springbot user
+		 *
+		 * @param int $length
+		 *
+		 * @return string
+		 */
+		private function random_password( $length = 12 ) {
+			$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+			$count = mb_strlen( $chars );
+
+			for ( $i = 0, $result = ''; $i < $length; $i ++ ) {
+				$index  = rand( 0, $count - 1 );
+				$result .= mb_substr( $chars, $index, 1 );
+			}
+
+			return $result;
+		}
+
+		/**
+		 * Normalize a string by removing spaces and converting to lowercase
+		 *
+		 * @param $string
+		 *
+		 * @return string
+		 */
+		private function normalize( $string ) {
+			return strtolower( str_replace( ' ', '-', $string ) );
 		}
 
 	}

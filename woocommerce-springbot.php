@@ -23,6 +23,7 @@ class WooCommerce_Springbot {
 
 	public function __construct() {
 
+
 		if ( $this->springbot_requirements_met() ) {
 
 			if ( is_admin() ) {
@@ -30,8 +31,6 @@ class WooCommerce_Springbot {
 				require_once( __DIR__ . '/classes/springbot_options.php' );
 				if ( class_exists( 'Springbot_Activation' ) ) {
 					$springbot_activation = new Springbot_Activation;
-					register_activation_hook( __FILE__, array( $springbot_activation, 'activate' ) );
-					register_deactivation_hook( __FILE__, array( $springbot_activation, 'deactivate' ) );
 
 					if ( class_exists( 'Springbot_Options' ) ) {
 						$springbot_options = new Springbot_Options( $springbot_activation );
@@ -95,4 +94,3 @@ function springbot_check_if_woo_active() {
 		apply_filters( 'active_plugins', get_option( 'active_plugins' ) )
 	);
 }
-

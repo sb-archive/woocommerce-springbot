@@ -12,6 +12,8 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 
 		/**
 		 * Springbot_Options constructor.
+		 *
+		 * @param Springbot_Activation $activation
 		 */
 		public function __construct( Springbot_Activation $activation ) {
 
@@ -22,13 +24,13 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 			if ( current_user_can( 'activate_plugins' ) ) {
 				if ( isset( $_POST['springbot']['email'] ) ) {
 					$code = $activation->register( $_POST['springbot']['email'], $_POST['springbot']['password'] );
-					if ($code >= 400) {
+					if ( $code >= 400 ) {
 						$redirect = 'plugins.php';
 						$redirect = add_query_arg( 'msg', $code, $redirect );
 						$redirect = add_query_arg( 'page', 'springbot', $redirect );
 						wp_redirect( $redirect );
 						exit;
-                    }
+					}
 				}
 			}
 		}
@@ -50,13 +52,21 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 		 * Options page callback
 		 */
 		public function create_admin_page() {
+
+		    $activation = new Springbot_Activation();
+
 			echo '<div class="wrap">';
 			echo '<h1>Springbot Sync</h1>';
-			echo '<form method="post" action="options.php">';
-			settings_fields( 'springbot_option_group' );
-			do_settings_sections( 'springbot-setting-admin' );
-			submit_button();
-			echo '</form>';
+		    if ($activation->is_registered()) {
+			    echo '<img src="' . plugins_url( '/assets/syncing.jpg', dirname(__FILE__) ) .'">';
+            }
+            else {
+	            echo '<form method="post" action="options.php">';
+	            settings_fields( 'springbot_option_group' );
+	            do_settings_sections( 'springbot-setting-admin' );
+	            submit_button();
+	            echo '</form>';
+            }
 			echo '</div>';
 		}
 
@@ -64,18 +74,18 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 		 * Show an the appropriate error message on failure
 		 */
 		function my_error_notice() {
-		    if (isset($_GET['msg'])) {
-			    if ( isset( $this->messages[ $_GET['msg'] ] ) ) {
-				    $message = $this->messages[ $_GET['msg'] ];
-			    } else {
-				    $message = $this->messages['default'];
-			    }
-			    ?>
+			if ( isset( $_GET['msg'] ) ) {
+				if ( isset( $this->messages[ $_GET['msg'] ] ) ) {
+					$message = $this->messages[ $_GET['msg'] ];
+				} else {
+					$message = $this->messages['default'];
+				}
+				?>
                 <div class="error notice">
-                    <p><?php _e( $message, 'my_plugin_textdomain' ); ?></p>
+                    <p><?php _e( $message ); ?></p>
                 </div>
-			    <?php
-            }
+				<?php
+			}
 		}
 
 		/**
