@@ -13,12 +13,11 @@ Author URI: https://www.springbot.com
 
 require_once( __DIR__ . '/config/springbot_config.php' );
 
-add_action( 'plugins_loaded', array( 'WooCommerce_Springbot', 'init' ));
+add_action( 'plugins_loaded', array( 'WooCommerce_Springbot', 'init' ) );
 
 class WooCommerce_Springbot {
 
-	public static function init()
-	{
+	public static function init() {
 		return new WooCommerce_Springbot();
 	}
 
@@ -33,12 +32,14 @@ class WooCommerce_Springbot {
 					$springbot_activation = new Springbot_Activation;
 					register_activation_hook( __FILE__, array( $springbot_activation, 'activate' ) );
 					register_deactivation_hook( __FILE__, array( $springbot_activation, 'deactivate' ) );
-				}
-				if ( class_exists( 'Springbot_Options' ) ) {
-					$springbot_options = new Springbot_Options();
+
+					if ( class_exists( 'Springbot_Options' ) ) {
+						$springbot_options = new Springbot_Options( $springbot_activation );
+					}
 				}
 
-				add_filter( "plugin_action_links_" . plugin_basename(__FILE__), array($this, 'plugin_add_settings_link') );
+				add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ),
+					array( $this, 'plugin_add_settings_link' ) );
 
 			} else {
 				require_once( __DIR__ . '/classes/springbot_footer.php' );
@@ -59,8 +60,9 @@ class WooCommerce_Springbot {
 	 * Add the link to the Springbot plugin on the settings page
 	 */
 	public function plugin_add_settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=springbot">' . __( 'Sync' ) . '</a>';
+		$settings_link = '<a href="plugins.php?page=springbot">' . __( 'Sync' ) . '</a>';
 		array_push( $links, $settings_link );
+
 		return $links;
 	}
 

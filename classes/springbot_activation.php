@@ -10,8 +10,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		/**
 		 * Returns true if the instance has been registered with Springbot
 		 */
-		public function is_registered()
-		{
+		public function is_registered() {
 
 		}
 
@@ -19,11 +18,17 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 * @param bool $network_wide
 		 */
 		public function activate( $network_wide ) {
-			$this->create_api_token();
 
-			$store_url = get_permalink( woocommerce_get_page_id( 'shop' ) );
+		}
+
+		public function register( $email, $password ) {
+
+			$store_url = get_site_url();
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
-			wp_remote_post( SPRINGBOT_WOO_ETL, array(
+
+			$registration_url = SPRINGBOT_WOO_ETL . '/api/v1/woocommerce/create';
+
+			$response = wp_remote_post( $registration_url, array(
 				'method'      => 'POST',
 				'timeout'     => 45,
 				'redirection' => 5,
@@ -34,7 +39,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 					'stores'          => array(
 						array(
 							'local_store_id'         => 1,
-							'instance_id'            => 1,
+							'instance_id'            => null,
 							'guid'                   => $this->generate_guid(),
 							'name'                   => get_bloginfo( 'name' ),
 							'code'                   => 'english-na',
@@ -43,34 +48,50 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 							'secure_url'             => $store_url,
 							'media_url'              => $store_url,
 							'web_id'                 => 1,
-							'store_mail_address'     => '123 Fake St',
+							'store_mail_address'     => get_option( 'woocommerce_store_address' ),
 							'customer_service_email' => get_bloginfo( 'admin_email' ),
 							'logo_url'               => '',
-							'logo_alt_tag'           => 'Woo store logo',
+							'logo_alt_tag'           => get_bloginfo( 'name' ),
 							'store_statuses'         => array(
-								'canceled' => 'Canceled',
-								'complete' => 'Complete',
-								'fraud'    => 'Fraud'
+								'pending-payment' => 'Pending Payment',
+								'failed'          => 'Failed',
+								'processing'      => 'Processing',
+								'completed'       => 'Completed',
+								'on-hold'         => 'On-Hold',
+								'cancelled'       => 'Cancelled',
+								'refunded'        => 'Refunded'
 							)
 						)
 					),
 					'platform'        => 'woocommerce',
-					'plugin_version'  => '1.0.0.0',
+					'plugin_version'  => SPRINGBOT_PLUGIN_VERSION,
 					'consumer_key'    => $consumer_key,
 					'consumer_secret' => $consumer_secret,
 					'credentials'     => array(
-						'user_id'  => 'dev@springbot.com',
-						'password' => 'password'
+						'user_id'  => $email,
+						'password' => $password
 					)
 				) ),
 			) );
+
+			if ( is_wp_error( $response ) ) {
+				$error_message = $response->get_error_message();
+				echo "Something went wrong: $error_message";
+				die;
+			} else {
+				echo 'Response:<pre>';
+				print_r( $response );
+				echo '</pre>';
+				die;
+			}
+
 		}
 
 		private function create_api_token() {
 			global $wpdb;
 
 			$description = sprintf(
-				__( '%1$s - API %2$s (created on %3$s at %4$s).', 'woocommerce' ),
+				__( '%1$s - API (created on %2$s at %3$s).', 'woocommerce' ),
 				wc_clean( 'Springbot' ),
 				date_i18n( wc_date_format() ),
 				date_i18n( wc_time_format() )
