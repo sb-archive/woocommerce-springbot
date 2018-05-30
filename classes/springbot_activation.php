@@ -21,13 +21,14 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 		}
 
+		/**
+		 * @param string $email
+		 * @param string $password
+		 */
 		public function register( $email, $password ) {
-
 			$store_url = get_site_url();
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
-
 			$registration_url = SPRINGBOT_WOO_ETL . '/api/v1/woocommerce/create';
-
 			$response = wp_remote_post( $registration_url, array(
 				'method'      => 'POST',
 				'timeout'     => 45,
@@ -76,17 +77,18 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 			if ( is_wp_error( $response ) ) {
 				$error_message = $response->get_error_message();
-				echo "Something went wrong: $error_message";
-				die;
+				error_log("Error during Springbot registration: {$error_message}");
+				return 500;
 			} else {
-				echo 'Response:<pre>';
-				print_r( $response );
-				echo '</pre>';
-				die;
+				return $response['response']['code'];
 			}
 
 		}
 
+
+		/**
+		 * Create an API token (key + secret) to send to the ETL
+		 */
 		private function create_api_token() {
 			global $wpdb;
 
