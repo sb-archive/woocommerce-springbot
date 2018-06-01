@@ -111,6 +111,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 			return false;
 		}
 
+
 		/**
 		 * Create an API token (key + secret) to send to the ETL
 		 */

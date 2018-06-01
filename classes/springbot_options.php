@@ -143,7 +143,6 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 			echo '<input type="password" id="password" name="springbot[password]" value="" />';
 		}
 
-
 	}
 
 }
