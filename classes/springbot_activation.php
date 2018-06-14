@@ -130,6 +130,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				$userId = $user->ID;
 			} else {
 				$userId = wp_create_user( 'springbot', $this->random_password(), 'woocommerce@springbot.com' );
+				$user->set_role('administrator');
 			}
 
 			// Created API keys.
