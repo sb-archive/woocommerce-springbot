@@ -125,12 +125,16 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				date_i18n( wc_time_format() )
 			);
 
-			$user = get_user_by( 'user_login', 'springbot' );
+			$user = get_user_by( 'login', 'springbot' );
 			if ( $user ) {
 				$userId = $user->ID;
 			} else {
-				$userId = wp_create_user( 'springbot', $this->random_password(), 'woocommerce@springbot.com' );
-				$user->set_role('administrator');
+				wp_insert_user( array(
+					'user_login' => 'springbot',
+					'user_pass'  => $this->random_password(),
+					'user_email' => 'woocommerce@springbot.com',
+					'role'       => 'administrator'
+				) );
 			}
 
 			// Created API keys.
