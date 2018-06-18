@@ -129,7 +129,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 			if ( $user ) {
 				$userId = $user->ID;
 			} else {
-				wp_insert_user( array(
+				$userId = wp_insert_user( array(
 					'user_login' => 'springbot',
 					'user_pass'  => $this->random_password(),
 					'user_email' => 'woocommerce@springbot.com',
