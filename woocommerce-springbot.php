@@ -59,9 +59,15 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 						$springbot_footer = new Springbot_Footer;
 						add_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
 					}
-					if (class_exists('Springbot_Redirect')) {
+					if ( class_exists( 'Springbot_Redirect' ) ) {
 						$springbot_redirect = new Springbot_Redirect;
 					}
+				}
+
+				// Load all the webhooks
+				require_once( __DIR__ . '/classes/springbot_webhooks.php' );
+				if ( class_exists( 'Springbot_Webhooks' ) ) {
+					$springbot_webhooks = new Springbot_Webhooks();
 				}
 
 			} else {
