@@ -66,14 +66,14 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param int $termId
 		 */
 		public function delete_category( $termId ) {
-			$this->send_webhook( 'category', $termId, true );
+			$this->send_webhook( 'categories', $termId, true );
 		}
 
 		/**
 		 * @param int $userId
 		 */
 		public function delete_customer( $userId ) {
-			$this->send_webhook( 'customer', $userId, true );
+			$this->send_webhook( 'customers', $userId, true );
 		}
 
 		/**
@@ -139,7 +139,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 				$customer = $cart->get_customer();
 				if ( $customer instanceof WC_Customer ) {
-					$this->send_webhook( 'cart', $this->tokenToDec( $hash ), false, array(
+					$this->send_webhook( 'carts', $this->tokenToDec( $hash ), false, array(
 						'hash'       => $hash,
 						'email'      => $customer->get_email(),
 						'first_name' => $customer->get_first_name(),
@@ -191,7 +191,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				}
 
 				$pathParts = array_reverse( $pathParts );
-				$this->send_webhook( 'category', $categoryId, false, array(
+				$this->send_webhook( 'categories', $categoryId, false, array(
 					'name' => $category->name,
 					'path' => implode( '/', $pathParts ),
 					'url'  => get_term_link( $categoryId, 'product_cat' )
@@ -205,7 +205,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param int $customerId
 		 */
 		public function send_customer_webhook( $customerId ) {
-			$this->send_webhook( 'customer', $customerId );
+			$this->send_webhook( 'customers', $customerId );
 		}
 
 		/**
@@ -215,7 +215,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param array $oldData
 		 */
 		public function send_customer_webhook_2( $customerId, $oldData ) {
-			$this->send_webhook( 'customer', $customerId );
+			$this->send_webhook( 'customers', $customerId );
 		}
 
 		/**
@@ -227,7 +227,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			if ( $product instanceof WC_Product ) {
 				$product = $product->get_id();
 			}
-			$this->send_webhook( 'product', $product );
+			$this->send_webhook( 'products', $product );
 		}
 
 		/**
@@ -236,7 +236,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param int $orderId
 		 */
 		public function send_order_webhook( $orderId ) {
-			$this->send_webhook( 'order', $orderId );
+			$this->send_webhook( 'orders', $orderId );
 		}
 
 		/**
@@ -261,10 +261,14 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			}
 			self::$called[ $key ] = true;
 
+			require_once( __DIR__ . '/../classes/springbot_activation.php' );
+
 			$activation = new Springbot_Activation();
 			if ( $activation->is_registered() ) {
 
-				wp_remote_post( SPRINGBOT_WOO_ETL . '/api/v1/webhooks', array(
+				$activation->
+
+				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type, array(
 						'method'      => 'POST',
 						'timeout'     => 45,
 						'redirection' => 5,

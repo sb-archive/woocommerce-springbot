@@ -21,6 +21,19 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		}
 
 		/**
+		 * Returns the springbot store ID if it exists, null otherwise
+		 *
+		 * @return int|null
+		 */
+		public function get_springbot_store_id() {
+			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+				return get_user_meta( $user->ID, 'springbot_store_id' );
+			}
+
+			return null;
+		}
+
+		/**
 		 * @param string $email
 		 * @param string $password
 		 *
@@ -29,7 +42,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		public function register( $email, $password ) {
 			$store_url = get_site_url();
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
-			$registration_url = SPRINGBOT_WOO_ETL . '/api/v1/woocommerce/create';
+			$registration_url = SPRINGBOT_WOO_ETL . '/woocommerce/create';
 			$response         = wp_remote_post( $registration_url, array(
 				'method'      => 'POST',
 				'timeout'     => 45,
