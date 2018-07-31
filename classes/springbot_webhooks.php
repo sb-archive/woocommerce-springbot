@@ -265,9 +265,6 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 			$activation = new Springbot_Activation();
 			if ( $activation->is_registered() ) {
-
-				$activation->
-
 				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type, array(
 						'method'      => 'POST',
 						'timeout'     => 45,
