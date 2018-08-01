@@ -27,7 +27,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 */
 		public function get_springbot_store_id() {
 			if ( $user = get_user_by( 'login', 'springbot' ) ) {
-				return get_user_meta( $user->ID, 'springbot_store_id' );
+				return get_user_meta( $user->ID, 'springbot_store_id', true );
 			}
 
 			return null;
