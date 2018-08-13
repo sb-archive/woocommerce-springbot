@@ -8,8 +8,10 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 		 * Show the async script only if the GUID is set
 		 */
 		public function show_async_script() {
-			if ($guid = $this->get_guid()) {
-				
+			global $product;
+
+			if ( $guid = $this->get_guid() ) {
+
 				echo "<script type=\"text/javascript\">\n";
 				echo "  var _sbparams = _sbparams || [];\n";
 				echo "  (function () {\n";
@@ -21,21 +23,29 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				echo "   fs.parentNode.insertBefore(sb, fs);\n";
 				echo "  })();\n";
 				echo "</script>\n";
-				
+
+				if ( $product instanceof WC_Product ) {
+					echo "<img src=\"" . SPRINGBOT_WOO_ETL . "/pixel/view"
+					     . "?guid=" . $this->get_guid()
+					     . "&pageurl=" . urlencode( $product->get_permalink() )
+					     . "&sku=" . $product->get_sku() . "\""
+					     . "style=\"position:absolute; visibility:hidden\">\n";
+				}
 			}
 		}
 
 		/**
 		 * Get the GUID from the springbot user
 		 */
-		private function get_guid()
-		{
-			if ($user = get_user_by( 'login', 'springbot')) {
-				$guid = get_user_meta($user->ID, 'springbot_store_guid', true);
-				$guid = strtolower($guid);
-				$guid = str_replace('-', '', $guid);
+		private function get_guid() {
+			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+				$guid = get_user_meta( $user->ID, 'springbot_store_guid', true );
+				$guid = strtolower( $guid );
+				$guid = str_replace( '-', '', $guid );
+
 				return $guid;
 			}
+
 			return null;
 		}
 

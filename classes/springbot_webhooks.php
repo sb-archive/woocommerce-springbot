@@ -265,20 +265,20 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 			$activation = new Springbot_Activation();
 			if ( $activation->is_registered() ) {
-				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type, array(
-						'method'      => 'POST',
-						'timeout'     => 45,
-						'redirection' => 5,
-						'blocking'    => false,
-						'headers'     => array(),
-						'body'        => json_encode( array(
-							'type'    => $type,
-							'id'      => $id,
-							'deleted' => $deleted,
-							'extra'   => $extra
-						) )
-					)
+				$data = array(
+					'method'      => 'POST',
+					'timeout'     => 45,
+					'redirection' => 5,
+					'blocking'    => false,
+					'headers'     => array(),
+					'body'        => json_encode( array(
+						'type'    => $type,
+						'id'      => $id,
+						'deleted' => $deleted,
+						'extra'   => $extra
+					) )
 				);
+				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type, $data );
 			}
 		}
 
