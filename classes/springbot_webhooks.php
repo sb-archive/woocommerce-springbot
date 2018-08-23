@@ -166,6 +166,10 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 				$customer = $cart->get_customer();
 				if ( $customer instanceof WC_Customer ) {
+					$userAgent = '';
+					if (isset($_SERVER['HTTP_USER_AGENT'])) {
+						$userAgent = $_SERVER['HTTP_USER_AGENT'];
+					}
 					$this->send_webhook( 'carts', $this->tokenToDec( $hash ), false, array(
 						'id'         => $this->tokenToDec( $hash ),
 						'hash'       => $hash,
@@ -174,6 +178,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						'last_name'  => $customer->get_last_name(),
 						'user_id'    => $customer->get_id(),
 						'is_guest'   => ! $customer->get_email(),
+						'user_agent' => $userAgent,
 						'items'      => $items
 					) );
 				}
