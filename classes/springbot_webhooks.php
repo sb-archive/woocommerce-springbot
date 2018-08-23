@@ -40,17 +40,36 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		}
 
 		/**
+		 * Called on the frontend when a user completes an order
+		 *
 		 * @param WC_Order $order
 		 * @param array $data
 		 */
 		function save_order_meta( $order, $data ) {
+
+			// Save the current user agent used to complete the order
 			if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 				$order->update_meta_data( '_sb_order_user_agent', $_SERVER['HTTP_USER_AGENT'] );
 			}
+
+			// Save any redirect IDs to the order. Used for Springbot attribution
 			if ( isset( $_COOKIE['redirect_mongo_id'] ) ) {
 				$order->update_meta_data( '_sb_redirect_mongo_id', $_COOKIE['redirect_mongo_id'] );
 			}
 
+			// Associate the cart ID to the order so we can associate the two in Springbot, then unset it
+			if ( isset( $_COOKIE['sb_cart_id'] ) && ( $_COOKIE['sb_cart_id'] > 0 ) ) {
+				$order->update_meta_data( '_sb_cart_id', $_COOKIE['sb_cart_id'] );
+				unset( $_COOKIE['sb_cart_id'] );
+				setcookie( 'sb_cart_id', null, - 1, '/' );
+			}
+
+			// Associate the user agent used on the cart to the order
+			if ( isset( $_COOKIE['sb_cart_user_agent'] ) ) {
+				$order->update_meta_data( '_sb_cart_user_agent', base64_decode( $_COOKIE['sb_cart_agent'] ) );
+				unset( $_COOKIE['sb_cart_user_agent'] );
+				setcookie( 'sb_cart_user_agent', null, - 1, '/' );
+			}
 		}
 
 		/**
@@ -60,7 +79,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			if ( $post = get_post( $postId ) ) {
 				if ( $post->post_type === 'product' ) {
 					$this->send_webhook( 'product', $postId, true );
-				} else if ( $post->post_type === 'shop_order' ) {
+				} elseif ( $post->post_type === 'shop_order' ) {
 					$this->send_webhook( 'order', $postId, true );
 				}
 			}
@@ -73,7 +92,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			if ( $post = get_post( $postId ) ) {
 				if ( $post->post_type === 'product' ) {
 					$this->send_webhook( 'product', $postId, true );
-				} else if ( $post->post_type === 'shop_order' ) {
+				} elseif ( $post->post_type === 'shop_order' ) {
 					$this->send_webhook( 'order', $postId, true );
 				}
 			}
@@ -167,9 +186,11 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				$customer = $cart->get_customer();
 				if ( $customer instanceof WC_Customer ) {
 					$userAgent = '';
-					if (isset($_SERVER['HTTP_USER_AGENT'])) {
+					if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 						$userAgent = $_SERVER['HTTP_USER_AGENT'];
+						setcookie( 'sb_cart_user_agent', base64_encode( $userAgent ), 0, '/' );
 					}
+					setcookie( 'sb_cart_id', $this->tokenToDec( $hash ), 0, '/' );
 					$this->send_webhook( 'carts', $this->tokenToDec( $hash ), false, array(
 						'id'         => $this->tokenToDec( $hash ),
 						'hash'       => $hash,
@@ -311,7 +332,8 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						'extra'   => $extra
 					) )
 				);
-				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type, $data );
+				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type,
+					$data );
 			}
 		}
 
