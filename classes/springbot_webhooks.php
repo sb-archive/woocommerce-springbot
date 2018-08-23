@@ -45,10 +45,10 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 */
 		function save_order_meta( $order, $data ) {
 			if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-				$order->update_meta_data( 'sb_order_user_agent', $_SERVER['HTTP_USER_AGENT'] );
+				$order->update_meta_data( '_sb_order_user_agent', $_SERVER['HTTP_USER_AGENT'] );
 			}
 			if ( isset( $_COOKIE['redirect_mongo_id'] ) ) {
-				$order->update_meta_data( 'sb_redirect_mongo_id', $_COOKIE['redirect_mongo_id'] );
+				$order->update_meta_data( '_sb_redirect_mongo_id', $_COOKIE['redirect_mongo_id'] );
 			}
 
 		}
