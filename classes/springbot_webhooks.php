@@ -34,6 +34,23 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			add_action( 'wp_delete_post', array( $this, 'delete_post' ), 10, 2 );
 			add_action( 'wp_trash_post', array( $this, 'trash_post' ) );
 
+			// Save redirect ID and user agent info
+			add_action( 'woocommerce_checkout_create_order', array( $this, 'save_order_meta' ), 20, 2 );
+
+		}
+
+		/**
+		 * @param WC_Order $order
+		 * @param array $data
+		 */
+		function save_order_meta( $order, $data ) {
+			if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+				$order->update_meta_data( 'sb_order_user_agent', $_SERVER['HTTP_USER_AGENT'] );
+			}
+			if ( isset( $_COOKIE['redirect_mongo_id'] ) ) {
+				$order->update_meta_data( 'sb_redirect_mongo_id', $_COOKIE['redirect_mongo_id'] );
+			}
+
 		}
 
 		/**
@@ -123,23 +140,34 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 					$data = $item['data'];
 					if ( $data instanceof WC_Product ) {
+						$sku = $data->get_sku();
 						if ( ! $item['variation_id'] ) {
 							$item['variation_id'] = null;
+						} else {
+							$parent = wc_get_product( $item['product_id'] );
+							if ( $parent instanceof WC_Product ) {
+								$sku = $parent->get_sku();
+							}
 						}
 
 						$items[] = array(
-							'product_id'   => $item['product_id'],
-							'product_sku'  => $data->get_sku(),
-							'type'         => $data->get_type(),
-							'quantity'     => $item['quantity'],
-							'variation_id' => $item['variation_id'],
+							'product_id'    => $item['product_id'],
+							'product_sku'   => $sku,
+							'type'          => $data->get_type(),
+							'quantity'      => $item['quantity'],
+							'variation_id'  => $item['variation_id'],
+							'landing_url'   => $data->get_permalink(),
+							'image_url'     => $data->get_image(),
+							'variation_sku' => $data->get_sku()
 						);
 					}
 				}
 
+
 				$customer = $cart->get_customer();
 				if ( $customer instanceof WC_Customer ) {
 					$this->send_webhook( 'carts', $this->tokenToDec( $hash ), false, array(
+						'id'         => $this->tokenToDec( $hash ),
 						'hash'       => $hash,
 						'email'      => $customer->get_email(),
 						'first_name' => $customer->get_first_name(),
