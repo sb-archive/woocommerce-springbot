@@ -53,8 +53,8 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			}
 
 			// Save any redirect IDs to the order. Used for Springbot attribution
-			if ( isset( $_COOKIE['redirect_mongo_id'] ) ) {
-				$order->update_meta_data( '_sb_redirect_mongo_id', $_COOKIE['redirect_mongo_id'] );
+			if ( isset( $_COOKIE['springbot_redirect_queue'] ) ) {
+				$order->update_meta_data( '_sb_redirect_queue', $_COOKIE['springbot_redirect_queue'] );
 			}
 
 			// Associate the cart ID to the order so we can associate the two in Springbot, then unset it
@@ -169,6 +169,13 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 							}
 						}
 
+						$imgSrc = '';
+						if ( $image = wp_get_attachment_image_src( $data->get_image_id() ) ) {
+							if ( is_array( $image ) && ( count( $image ) > 0 ) ) {
+								$imgSrc = $image[0];
+							}
+						}
+
 						$items[] = array(
 							'product_id'    => $item['product_id'],
 							'product_sku'   => $sku,
@@ -176,12 +183,11 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 							'quantity'      => $item['quantity'],
 							'variation_id'  => $item['variation_id'],
 							'landing_url'   => $data->get_permalink(),
-							'image_url'     => $data->get_image(),
+							'image_url'     => $imgSrc,
 							'variation_sku' => $data->get_sku()
 						);
 					}
 				}
-
 
 				$customer = $cart->get_customer();
 				if ( $customer instanceof WC_Customer ) {
