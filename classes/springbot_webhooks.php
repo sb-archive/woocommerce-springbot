@@ -189,7 +189,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 					}
 				}
 
-				$customer = $cart->get_customer();
+				$customer = WC()->customer;
 				if ( $customer instanceof WC_Customer ) {
 					$userAgent = '';
 					if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
