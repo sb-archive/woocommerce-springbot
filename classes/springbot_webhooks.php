@@ -26,7 +26,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			add_action( 'woocommerce_update_order', array( $this, 'send_order_webhook' ) );
 
 			// Carts - Cart qty update only
-			add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'send_cart_webhook_4' ), 10, 4 );
+			add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'send_cart_webhook_3' ), 10, 3 );
 			add_action( 'woocommerce_cart_item_removed', array( $this, 'send_cart_webhook_2' ), 10, 2 );
 			add_action( 'woocommerce_add_to_cart', array( $this, 'send_cart_webhook_3' ), 10, 3 );
 
@@ -111,19 +111,6 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		public function delete_customer( $userId ) {
 			$this->send_webhook( 'customers', $userId, true );
 		}
-
-		/**
-		 * Send a cart webhook to Springbot
-		 *
-		 * @param string $hash
-		 * @param int $id1
-		 * @param int $id2
-		 * @param WC_Cart $cart
-		 */
-		public function send_cart_webhook_4( $hash, $id1, $id2, $cart ) {
-			$this->convert_and_send_cart( $hash, $cart );
-		}
-
 
 		/**
 		 * Send a cart webhook to Springbot
