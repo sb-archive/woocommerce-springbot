@@ -5,13 +5,14 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 	class Springbot_Footer {
 
 		/**
-		 * Show the async script only if the GUID is set
+		 * Load all footer scripts and pixels
 		 */
 		public function show_async_script() {
 			global $product, $wp;
 
 			if ( $guid = $this->get_guid() ) {
 
+				// Load the async script from Springbot
 				echo "<script type=\"text/javascript\">\n";
 				echo "  var _sbparams = _sbparams || [];\n";
 				echo "  (function () {\n";
@@ -24,6 +25,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				echo "  })();\n";
 				echo "</script>\n";
 
+				// Load the view pixel if on a product page
 				if ( $product instanceof WC_Product ) {
 					echo "<img src=\"" . SPRINGBOT_WOO_ETL . "/pixel/view"
 					     . "?guid=" . $this->get_guid()
@@ -45,6 +47,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 						}
 					}
 				}
+
 			}
 		}
 
