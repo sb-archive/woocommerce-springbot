@@ -5,9 +5,10 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 	class Springbot_Options {
 
 		private $messages = array(
-			'404'     => 'There was a problem reaching the Springbot API',
-			'401'     => 'Invalid Springbot credentials',
-			'default' => 'An unknown error occurred.',
+			'404'       => 'There was a problem reaching the Springbot API',
+			'401'       => 'Invalid Springbot credentials',
+			'not_admin' => 'You do not have permission to activate plugins',
+			'default'   => 'An unknown error occurred.',
 		);
 
 		/**
@@ -21,16 +22,20 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 			add_action( 'admin_init', array( $this, 'page_init' ) );
 			add_action( 'admin_notices', array( $this, 'my_error_notice' ) );
 
-			if ( current_user_can( 'activate_plugins' ) ) {
-				if ( isset( $_POST['springbot']['email'] ) ) {
-					$code = $activation->register( $_POST['springbot']['email'], $_POST['springbot']['password'] );
-					if ( $code >= 400 ) {
-						$redirect = 'plugins.php';
-						$redirect = add_query_arg( 'msg', $code, $redirect );
-						$redirect = add_query_arg( 'page', 'springbot', $redirect );
-						wp_redirect( $redirect );
-						exit;
-					}
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				$redirect = 'plugins.php';
+				$redirect = add_query_arg( 'msg', 'not_admin', $redirect );
+				$redirect = add_query_arg( 'page', 'springbot', $redirect );
+				wp_redirect( $redirect );
+				exit;
+			} elseif ( isset( $_POST['springbot']['email'] ) && isset( $_POST['springbot']['password'] ) )  {
+				$code = $activation->register( $_POST['springbot']['email'], $_POST['springbot']['password'] );
+				if ( $code >= 400 ) {
+					$redirect = 'plugins.php';
+					$redirect = add_query_arg( 'msg', $code, $redirect );
+					$redirect = add_query_arg( 'page', 'springbot', $redirect );
+					wp_redirect( $redirect );
+					exit;
 				}
 			}
 		}
@@ -53,20 +58,19 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 		 */
 		public function create_admin_page() {
 
-		    $activation = new Springbot_Activation();
+			$activation = new Springbot_Activation();
 
 			echo '<div class="wrap">';
 			echo '<h1>Springbot Sync</h1>';
-		    if ($activation->is_registered()) {
-			    echo '<img src="' . plugins_url( '/assets/syncing.jpg', dirname(__FILE__) ) .'">';
-            }
-            else {
-	            echo '<form method="post" action="options.php">';
-	            settings_fields( 'springbot_option_group' );
-	            do_settings_sections( 'springbot-setting-admin' );
-	            submit_button();
-	            echo '</form>';
-            }
+			if ( $activation->is_registered() ) {
+				echo '<img src="' . plugins_url( '/assets/syncing.jpg', dirname( __FILE__ ) ) . '">';
+			} else {
+				echo '<form method="post" action="options.php">';
+				settings_fields( 'springbot_option_group' );
+				do_settings_sections( 'springbot-setting-admin' );
+				submit_button();
+				echo '</form>';
+			}
 			echo '</div>';
 		}
 
