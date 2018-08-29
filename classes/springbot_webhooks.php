@@ -183,9 +183,17 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						$userAgent = $_SERVER['HTTP_USER_AGENT'];
 						setcookie( 'sb_cart_user_agent', base64_encode( $userAgent ), 0, '/' );
 					}
-					setcookie( 'sb_cart_id', $this->tokenToDec( $hash ), 0, '/' );
-					$this->send_webhook( 'carts', $this->tokenToDec( $hash ), false, array(
-						'id'         => $this->tokenToDec( $hash ),
+					if ( isset( $_COOKIE['sb_cart_id'] ) && is_numeric( $_COOKIE['sb_cart_id'] ) ) {
+						$cartId = $_COOKIE['sb_cart_id'];
+					} else {
+
+						// Create a unique ID for this cart and save it
+						$cartId = $this->tokenToDec( $hash . time() );
+						setcookie( 'sb_cart_id', $cartId, 0, '/' );
+					}
+
+					$this->send_webhook( 'carts', $cartId, false, array(
+						'id'         => $cartId,
 						'hash'       => $hash,
 						'email'      => $customer->get_email(),
 						'first_name' => $customer->get_first_name(),
