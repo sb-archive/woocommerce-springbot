@@ -30,7 +30,8 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					echo "<img src=\"" . SPRINGBOT_WOO_ETL . "/pixel/view"
 					     . "?guid=" . $this->get_guid()
 					     . "&pageurl=" . urlencode( $product->get_permalink() )
-					     . "&sku=" . $product->get_sku() . "\""
+					     . "&product_id=" . $product->get_id()
+					     . "&sku=" . urlencode( $product->get_sku() ) . "\""
 					     . "style=\"position:absolute; visibility:hidden\">\n";
 				}
 
