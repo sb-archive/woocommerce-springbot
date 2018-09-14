@@ -70,6 +70,11 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				unset( $_COOKIE['sb_cart_user_agent'] );
 				setcookie( 'sb_cart_user_agent', null, - 1, '/' );
 			}
+
+			// Associate the email cookie to the order
+			if ( isset( $_COOKIE['sb_email'] ) && ( $_COOKIE['sb_email'] > 0 ) ) {
+				$order->update_meta_data( '_sb_email', $_COOKIE['sb_email'] );
+			}
 		}
 
 		/**
