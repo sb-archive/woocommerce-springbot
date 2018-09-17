@@ -72,7 +72,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			}
 
 			// Associate the email cookie to the order
-			if isset( $_COOKIE['sb_email'] ) {
+			if ( isset( $_COOKIE['sb_email'] ) ) {
 				$order->update_meta_data( '_sb_email', $_COOKIE['sb_email'] );
 			}
 		}
