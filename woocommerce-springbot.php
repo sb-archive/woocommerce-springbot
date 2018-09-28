@@ -37,6 +37,18 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 
 			if ( $this->springbot_requirements_met() ) {
 
+				if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['HTTP_AUTH'] ) ) {
+					$headerParts = explode( ' ', $_SERVER['HTTP_AUTH'] );
+					if ( count( $headerParts ) === 2 ) {
+						$authParts = explode( ':', base64_decode( $headerParts[1] ) );
+						if ( count( $authParts ) === 2 ) {
+							$_SERVER['PHP_AUTH_USER']      = $authParts[0];
+							$_SERVER['PHP_AUTH_PW']        = $authParts[1];
+							$_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_AUTH'];
+						}
+					}
+				}
+
 				if ( is_admin() ) {
 					require_once( __DIR__ . '/classes/springbot_activation.php' );
 					require_once( __DIR__ . '/classes/springbot_options.php' );
