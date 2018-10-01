@@ -143,6 +143,9 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 			$user = get_user_by( 'login', 'springbot' );
 			if ( $user ) {
+				if ( ! in_array( 'administrator', $user->roles ) ) {
+					$user->set_role( 'administrator' );
+				}
 				$userId = $user->ID;
 			} else {
 				$userId = wp_insert_user( array(
