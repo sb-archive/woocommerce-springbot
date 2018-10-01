@@ -53,7 +53,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				'blocking'    => true,
 				'headers'     => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 				'body'        => json_encode( array(
-					'stores'          => array(
+					'stores'              => array(
 						array(
 							'local_store_id'         => 1,
 							'instance_id'            => null,
@@ -80,11 +80,12 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 							)
 						)
 					),
-					'platform'        => 'woocommerce',
-					'plugin_version'  => SPRINGBOT_PLUGIN_VERSION,
-					'consumer_key'    => $consumer_key,
-					'consumer_secret' => $consumer_secret,
-					'credentials'     => array(
+					'platform'            => 'woocommerce',
+					'plugin_version'      => SPRINGBOT_PLUGIN_VERSION,
+					'woocommerce_version' => WC()->version,
+					'consumer_key'        => $consumer_key,
+					'consumer_secret'     => $consumer_secret,
+					'credentials'         => array(
 						'user_id'  => $email,
 						'password' => $password
 					)
