@@ -52,16 +52,7 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 				if ( is_admin() ) {
 					require_once( __DIR__ . '/classes/springbot_activation.php' );
 					require_once( __DIR__ . '/classes/springbot_options.php' );
-					if ( class_exists( 'Springbot_Activation' ) ) {
-						$springbot_activation = new Springbot_Activation;
-
-						if ( class_exists( 'Springbot_Options' ) ) {
-							$springbot_options = new Springbot_Options( $springbot_activation );
-						}
-					}
-
-					add_filter( "plugin_action_links_" . plugin_basename( __FILE__ ),
-						array( $this, 'plugin_add_settings_link' ) );
+					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
 
 				} else {
 					require_once( __DIR__ . '/classes/springbot_footer.php' );
@@ -89,14 +80,31 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 			}
 		}
 
-		/**
-		 * Add the link to the Springbot plugin on the settings page
-		 */
-		public function plugin_add_settings_link( $links ) {
-			$settings_link = '<a href="plugins.php?page=springbot">' . __( 'Sync' ) . '</a>';
-			array_push( $links, $settings_link );
+		public function springbot_menu_page() {
+			if ( class_exists( 'Springbot_Activation' ) ) {
+				$springbot_activation = new Springbot_Activation;
 
-			return $links;
+				if ( class_exists( 'Springbot_Options' ) ) {
+					$springbot_options = new Springbot_Options( $springbot_activation );
+					add_menu_page(
+						'Springbot',
+						'Springbot',
+						'manage_options',
+						'springbot',
+						array( $springbot_options, 'create_admin_page' ),
+						'data:image/svg+xml;base64,' . base64_encode('<?xml version="1.0" encoding="utf-8"?>
+							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+								 viewBox="0 0 46.8 40.9" style="enable-background:new 0 0 46.8 40.9;" xml:space="preserve">
+							<path id="Fill-15" class="st0" d="M18,15.1c-2.6,2.7-4.7,5.8-5.8,9.4c-1.5,4.7-1,9.5,1.4,12.2c1.2,1.3,2.5,1.8,4,1.5
+								c2.6-0.6,5.1-3.5,6.3-7.2c0.7-2.4,1.8-8.6-3.7-14.3C19.4,16,18.7,15.5,18,15.1 M16.7,40.9c-1.9,0-3.7-0.9-5.1-2.5
+								c-3-3.4-3.7-9-1.9-14.7c1.2-3.6,3.1-6.7,5.6-9.5c-1.3-0.1-2.4,0.1-3.4,0.5C6.6,16.6,2.1,22.3,1.6,29C1.5,30.9,0,30.4,0,29.7
+								c0.5-7.6,4.8-15.1,11-17.4c2.2-0.8,4.4-0.9,6.4-0.3C24.2,5.5,37.1,1.6,44.9,0.1C47.7-0.4,47.2,1,45,1.5c-5.8,1.2-19.1,5.8-24.9,11.6
+								c0.7,0.5,1.3,1.2,2,1.8c4.5,4.7,6.1,10.9,4.3,16.8c-1.4,4.6-4.7,8.2-8.2,8.9C17.6,40.8,17.2,40.9,16.7,40.9"/>
+							</svg>
+						')
+					);
+				}
+			}
 		}
 
 		/**

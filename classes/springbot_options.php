@@ -24,7 +24,7 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 
 			if ( isset( $_POST['springbot']['email'] ) && isset( $_POST['springbot']['password'] ) ) {
 				if ( ! current_user_can( 'activate_plugins' ) ) {
-					$redirect = 'plugins.php';
+					$redirect = 'admin.php';
 					$redirect = add_query_arg( 'msg', 'not_admin', $redirect );
 					$redirect = add_query_arg( 'page', 'springbot', $redirect );
 					wp_redirect( $redirect );
@@ -32,7 +32,7 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 				} else {
 					$code = $activation->register( $_POST['springbot']['email'], $_POST['springbot']['password'] );
 					if ( $code >= 400 ) {
-						$redirect = 'plugins.php';
+						$redirect = 'admin.php';
 						$redirect = add_query_arg( 'msg', $code, $redirect );
 						$redirect = add_query_arg( 'page', 'springbot', $redirect );
 						wp_redirect( $redirect );
@@ -40,19 +40,6 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 					}
 				}
 			}
-		}
-
-		/**
-		 * Add the "sync" page to the plugin list
-		 */
-		public function add_sync_page() {
-			add_plugins_page(
-				'Springbot',
-				'Springbot',
-				'manage_options',
-				'springbot',
-				array( $this, 'create_admin_page' )
-			);
 		}
 
 		/**
@@ -65,9 +52,12 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 			echo '<div class="wrap">';
 			echo '<h1>Springbot Sync</h1>';
 			if ( $activation->is_registered() ) {
+				echo '<a href="https://app.springbot.com">';
 				echo '<img src="' . plugins_url( '/assets/syncing.jpg', dirname( __FILE__ ) ) . '">';
+				echo '</a>';
 			} else {
-				echo '<form method="post" action="options.php">';
+				echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+				echo '<input type="hidden" name="action" value="springbot_login">';
 				settings_fields( 'springbot_option_group' );
 				do_settings_sections( 'springbot-setting-admin' );
 				submit_button();
