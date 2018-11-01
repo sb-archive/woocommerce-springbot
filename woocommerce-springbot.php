@@ -50,8 +50,7 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 				}
 
 				if ( is_admin() ) {
-					require_once( __DIR__ . '/classes/springbot_activation.php' );
-					require_once( __DIR__ . '/classes/springbot_options.php' );
+
 					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
 
 				} else {
@@ -81,6 +80,10 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 		}
 
 		public function springbot_menu_page() {
+
+			require_once( __DIR__ . '/classes/springbot_activation.php' );
+			require_once( __DIR__ . '/classes/springbot_options.php' );
+
 			if ( class_exists( 'Springbot_Activation' ) ) {
 				$springbot_activation = new Springbot_Activation;
 
