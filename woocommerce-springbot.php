@@ -4,7 +4,7 @@
  * @version 0.1
  */
 /*
-Plugin Name: Springbot WooCommerce Integration
+Plugin Name: WooCommerce - Springbot Integration
 Description: Integration plugin between WooCommerce and Springbot
 Author: Springbot
 Version: 0.0.6

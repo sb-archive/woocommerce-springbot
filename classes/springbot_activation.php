@@ -40,7 +40,6 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 * @return int
 		 */
 		public function register( $email, $password ) {
-
 			$store_url = get_site_url();
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
 			$registration_url = SPRINGBOT_WOO_ETL . '/woocommerce/create';

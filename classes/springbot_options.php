@@ -56,7 +56,7 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 				echo '<img src="' . plugins_url( '/assets/syncing.jpg', dirname( __FILE__ ) ) . '">';
 				echo '</a>';
 			} else {
-				echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+				echo '<form method="post" action="' . esc_url( admin_url( 'admin.php' ) ) . '?page=springbot">';
 				echo '<input type="hidden" name="action" value="springbot_login">';
 				settings_fields( 'springbot_option_group' );
 				do_settings_sections( 'springbot-setting-admin' );
