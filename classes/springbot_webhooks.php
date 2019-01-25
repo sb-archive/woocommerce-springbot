@@ -188,15 +188,8 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						$userAgent = $_SERVER['HTTP_USER_AGENT'];
 						setcookie( 'sb_cart_user_agent', base64_encode( $userAgent ), 0, '/' );
 					}
-					if ( isset( $_COOKIE['sb_cart_id'] ) && is_numeric( $_COOKIE['sb_cart_id'] ) ) {
-						$cartId = $_COOKIE['sb_cart_id'];
-					} else {
 
-						// Create a unique ID for this cart and save it
-						$cartId = $this->tokenToDec( $hash . time() );
-						setcookie( 'sb_cart_id', $cartId, 0, '/' );
-					}
-
+					$cartId = Springbot_Cart::get_cart_id( $hash );
 					$this->send_webhook( 'carts', $cartId, false, array(
 						'id'         => $cartId,
 						'hash'       => $hash,
@@ -340,21 +333,6 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				);
 				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type,
 					$data );
-			}
-		}
-
-		/**
-		 * Convert a hex value to an integer value and truncate it if necessary
-		 *
-		 * @param string $token
-		 *
-		 * @return int
-		 */
-		private function tokenToDec( $token ) {
-			if ( ! $token ) {
-				return null;
-			} else {
-				return hexdec( substr( $token, - 7 ) );
 			}
 		}
 
