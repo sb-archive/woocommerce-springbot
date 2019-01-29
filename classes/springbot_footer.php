@@ -33,6 +33,12 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					     . "&product_id=" . $product->get_id()
 					     . "&sku=" . urlencode( $product->get_sku() ) . "\""
 					     . "style=\"position:absolute; visibility:hidden\">\n";
+
+					// Set the product_id for our async script to use if needed
+					echo "<script type=\"text/javascript\">\n";
+					echo "  var Springbot = Springbot || {};\n";
+					echo "  Springbot.product_id = \"{$product->get_id()}\";\n";
+					echo "</script>\n";
 				}
 
 				// Load AdRoll conversion tracking on checkout success (aka order received) page

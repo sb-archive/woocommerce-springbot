@@ -7,7 +7,7 @@
 Plugin Name: WooCommerce - Springbot Integration
 Description: Integration plugin between WooCommerce and Springbot
 Author: Springbot
-Version: 0.0.6
+Version: 0.1.0
 Author URI: https://www.springbot.com
 */
 
@@ -56,6 +56,7 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 				} else {
 					require_once( __DIR__ . '/classes/springbot_footer.php' );
 					require_once( __DIR__ . '/classes/springbot_redirect.php' );
+					require_once( __DIR__ . '/classes/springbot_cart.php' );
 
 					if ( class_exists( 'Springbot_Footer' ) ) {
 						$springbot_footer = new Springbot_Footer;
@@ -63,6 +64,11 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 					}
 					if ( class_exists( 'Springbot_Redirect' ) ) {
 						$springbot_redirect = new Springbot_Redirect;
+						add_action( 'wp_loaded', array( $springbot_redirect, 'handle_redirect_posts' ) );
+					}
+					if ( class_exists( 'Springbot_Cart' ) ) {
+						$springbot_cart = new Springbot_Cart;
+						add_action( 'woocommerce_cart_loaded_from_session', array( $springbot_cart, 'handle_cart_endpoint' ) );
 					}
 				}
 
