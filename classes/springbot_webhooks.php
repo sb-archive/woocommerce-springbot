@@ -196,11 +196,20 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						$cartId = $this->tokenToDec( $hash . time() );
 						setcookie( 'sb_cart_id', $cartId, 0, '/' );
 					}
+					if (empty($customer->get_email())) {
+						if (isset($_COOKIE['sb_email'])) {
+							$email = $_COOKIE['sb_email'];
+						} else {
+							$email = '';
+						}
+					} else {
+						$email = $customer->get_email();
+					}
 
 					$this->send_webhook( 'carts', $cartId, false, array(
 						'id'         => $cartId,
 						'hash'       => $hash,
-						'email'      => $customer->get_email(),
+						'email'      => $email,
 						'first_name' => $customer->get_first_name(),
 						'last_name'  => $customer->get_last_name(),
 						'user_id'    => $customer->get_id(),
