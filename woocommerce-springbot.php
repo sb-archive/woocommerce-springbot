@@ -30,8 +30,6 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 	class WooCommerce_Springbot {
 
 		public static function init() {
-			add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
-
 			return new WooCommerce_Springbot();
 		}
 
@@ -61,6 +59,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 				if ( is_admin() ) {
 
 					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
+					add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
 
 				} else {
 					require_once( __DIR__ . '/classes/springbot_footer.php' );
