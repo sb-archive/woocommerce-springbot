@@ -30,7 +30,16 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 	class WooCommerce_Springbot {
 
 		public static function init() {
+			add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
+
 			return new WooCommerce_Springbot();
+		}
+
+		// Hide the springbot user that we need for API access, so that it doesn't get deleted or a session timeout
+		function hide_springbot_api_user( $user_search ) {
+			global $wpdb;
+			$user_search->query_where = str_replace( 'WHERE 1=1',
+				"WHERE 1=1 AND {$wpdb->users}.user_login != 'springbot'", $user_search->query_where );
 		}
 
 		public function __construct() {
@@ -68,7 +77,10 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 					}
 					if ( class_exists( 'Springbot_Cart' ) ) {
 						$springbot_cart = new Springbot_Cart;
-						add_action( 'woocommerce_cart_loaded_from_session', array( $springbot_cart, 'handle_cart_endpoint' ) );
+						add_action( 'woocommerce_cart_loaded_from_session', array(
+							$springbot_cart,
+							'handle_cart_endpoint'
+						) );
 					}
 				}
 
@@ -101,7 +113,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 						'manage_options',
 						'springbot',
 						array( $springbot_options, 'create_admin_page' ),
-						'data:image/svg+xml;base64,' . base64_encode('<?xml version="1.0" encoding="utf-8"?>
+						'data:image/svg+xml;base64,' . base64_encode( '<?xml version="1.0" encoding="utf-8"?>
 							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 								 viewBox="0 0 46.8 40.9" style="enable-background:new 0 0 46.8 40.9;" xml:space="preserve">
 							<path id="Fill-15" class="st0" d="M18,15.1c-2.6,2.7-4.7,5.8-5.8,9.4c-1.5,4.7-1,9.5,1.4,12.2c1.2,1.3,2.5,1.8,4,1.5
@@ -110,7 +122,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 								c0.5-7.6,4.8-15.1,11-17.4c2.2-0.8,4.4-0.9,6.4-0.3C24.2,5.5,37.1,1.6,44.9,0.1C47.7-0.4,47.2,1,45,1.5c-5.8,1.2-19.1,5.8-24.9,11.6
 								c0.7,0.5,1.3,1.2,2,1.8c4.5,4.7,6.1,10.9,4.3,16.8c-1.4,4.6-4.7,8.2-8.2,8.9C17.6,40.8,17.2,40.9,16.7,40.9"/>
 							</svg>
-						')
+						' )
 					);
 				}
 			}
