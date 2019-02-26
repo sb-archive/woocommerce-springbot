@@ -26,7 +26,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				echo "</script>\n";
 
 				// Load the view pixel if on a product page
-				if ( $product instanceof WC_Product ) {
+				if ( is_product() && ( $product instanceof WC_Product ) ) {
 					echo "<img src=\"" . SPRINGBOT_WOO_ETL . "/pixel/view"
 					     . "?guid=" . $this->get_guid()
 					     . "&pageurl=" . urlencode( $product->get_permalink() )
