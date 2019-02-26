@@ -25,7 +25,7 @@ function springbot_check_if_woo_active() {
 	);
 }
 
-if ( ! class_exists( 'Springbot_Redirect' ) ) {
+if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 
 	class WooCommerce_Springbot {
 
