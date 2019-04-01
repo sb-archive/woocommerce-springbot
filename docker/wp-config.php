@@ -3,7 +3,7 @@
 define( 'DB_NAME', 'wordpress' );
 define( 'DB_USER', 'wordpress' );
 define( 'DB_PASSWORD', 'wordpress' );
-define( 'DB_HOST', 'wordpress_db' );
+define( 'DB_HOST', 'woo_store_db' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
