@@ -13,8 +13,6 @@ Author URI: https://www.springbot.com
 
 require_once( __DIR__ . '/config/springbot_config.php' );
 
-add_action( 'plugins_loaded', array( 'WooCommerce_Springbot', 'init' ) );
-
 /**
  * Helper function to determine if WooCommerce is active
  */
