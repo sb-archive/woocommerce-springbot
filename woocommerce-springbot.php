@@ -1,11 +1,10 @@
 <?php
 /**
  * Plugin Name: Springbot WooCommerce Integration
- * Plugin URI: https://woocommerce.com/
+ * Plugin URI: https://www.springbot.com/
  * Description: Integration plugin between WooCommerce and Springbot
  * Version: 0.0.8
  * Author: Springbot
- * Author URI: https://www.springbot.com
  *
  * @package Woocommerce_Springbot
  */
