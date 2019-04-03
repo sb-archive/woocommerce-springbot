@@ -316,7 +316,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			}
 			self::$called[ $key ] = true;
 
-			require_once( __DIR__ . '/../classes/springbot_activation.php' );
+
 
 			$activation = new Springbot_Activation();
 			if ( $activation->is_registered() ) {

@@ -27,9 +27,9 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      SPRINGBOT_WOO_ETL: woo_etl:9000
+      SPRINGBOT_WOO_ETL: http://woo_etl:9000
       SPRINGBOT_ASSETS_DOMAIN: www_app:3000
-      SPRINGBOT_APP_URL: www_app:3000
+      SPRINGBOT_APP_URL: http://www_app:3000
     volumes:
       - .:/var/www/html/wp-content/plugins/woocommerce-springbot
 
