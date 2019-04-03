@@ -1,15 +1,14 @@
 <?php
 /**
+ * Plugin Name: Springbot WooCommerce Integration
+ * Plugin URI: https://woocommerce.com/
+ * Description: Integration plugin between WooCommerce and Springbot
+ * Version: 0.0.8
+ * Author: Springbot
+ * Author URI: https://www.springbot.com
+ *
  * @package Woocommerce_Springbot
- * @version 0.1
  */
-/*
-Plugin Name: WooCommerce - Springbot Integration
-Description: Integration plugin between WooCommerce and Springbot
-Author: Springbot
-Version: 0.1.0
-Author URI: https://www.springbot.com
-*/
 
 require_once( __DIR__ . '/config/springbot_config.php' );
 
