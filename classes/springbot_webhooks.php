@@ -188,16 +188,9 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						$userAgent = $_SERVER['HTTP_USER_AGENT'];
 						setcookie( 'sb_cart_user_agent', base64_encode( $userAgent ), 0, '/' );
 					}
-					if ( isset( $_COOKIE['sb_cart_id'] ) && is_numeric( $_COOKIE['sb_cart_id'] ) ) {
-						$cartId = $_COOKIE['sb_cart_id'];
-					} else {
 
-						// Create a unique ID for this cart and save it
-						$cartId = $this->tokenToDec( $hash . time() );
-						setcookie( 'sb_cart_id', $cartId, 0, '/' );
-					}
-					if (empty($customer->get_email())) {
-						if (isset($_COOKIE['sb_email'])) {
+					if ( empty( $customer->get_email() ) ) {
+						if ( isset( $_COOKIE['sb_email'] ) ) {
 							$email = $_COOKIE['sb_email'];
 						} else {
 							$email = '';
@@ -206,6 +199,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						$email = $customer->get_email();
 					}
 
+					$cartId = (int) Springbot_Cart::get_cart_id( $hash );
 					$this->send_webhook( 'carts', $cartId, false, array(
 						'id'         => $cartId,
 						'hash'       => $hash,
@@ -217,6 +211,20 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 						'user_agent' => $userAgent,
 						'items'      => $items
 					) );
+					$cartId = (int) Springbot_Cart::get_cart_id( $hash );
+					if ( $cartId > 0 ) {
+						$this->send_webhook( 'carts', $cartId, false, array(
+							'id'         => $cartId,
+							'hash'       => $hash,
+							'email'      => $customer->get_email(),
+							'first_name' => $customer->get_first_name(),
+							'last_name'  => $customer->get_last_name(),
+							'user_id'    => $customer->get_id(),
+							'is_guest'   => ! $customer->get_email(),
+							'user_agent' => $userAgent,
+							'items'      => $items
+						) );
+					}
 				}
 			}
 		}
@@ -349,21 +357,6 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				);
 				wp_remote_post( SPRINGBOT_WOO_ETL . '/woocommerce/webhooks/v1/' . $activation->get_springbot_store_id() . '/' . $type,
 					$data );
-			}
-		}
-
-		/**
-		 * Convert a hex value to an integer value and truncate it if necessary
-		 *
-		 * @param string $token
-		 *
-		 * @return int
-		 */
-		private function tokenToDec( $token ) {
-			if ( ! $token ) {
-				return null;
-			} else {
-				return hexdec( substr( $token, - 7 ) );
 			}
 		}
 

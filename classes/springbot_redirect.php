@@ -4,10 +4,6 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 
 	class Springbot_Redirect {
 
-		public function __construct() {
-			add_action( 'wp_loaded', array( $this, 'handle_redirect_posts' ) );
-		}
-
 		/**
 		 * Check if the path is /i, and if so redirect to the Springbot instagram page
 		 *
