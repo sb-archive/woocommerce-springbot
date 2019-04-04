@@ -1,5 +1,7 @@
 <?php
 
+// this script is for testing and development purposes only
+
 define( 'DB_NAME', 'wordpress' );
 define( 'DB_USER', 'wordpress' );
 define( 'DB_PASSWORD', 'wordpress' );

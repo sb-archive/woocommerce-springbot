@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# this script is for testing and development purposes only
+
 if [ ! -f "/var/wp_installed" ]; then
 
     echo "installing woocommerce and springbot"
@@ -28,3 +30,4 @@ else
 	echo "woocommerce already installed"
 
 fi
+
