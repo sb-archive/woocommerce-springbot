@@ -66,7 +66,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 			// Associate the user agent used on the cart to the order
 			if ( isset( $_COOKIE['sb_cart_user_agent'] ) ) {
-				$order->update_meta_data( '_sb_cart_user_agent', base64_decode( $_COOKIE['sb_cart_agent'] ) );
+				$order->update_meta_data( '_sb_cart_user_agent', base64_decode( $_COOKIE['sb_cart_user_agent'] ) );
 				unset( $_COOKIE['sb_cart_user_agent'] );
 				setcookie( 'sb_cart_user_agent', null, - 1, '/' );
 			}
