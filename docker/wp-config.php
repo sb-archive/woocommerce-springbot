@@ -3,9 +3,9 @@
 // this script is for testing and development purposes only
 
 define( 'DB_NAME', 'wordpress' );
-define( 'DB_USER', 'wordpress' );
-define( 'DB_PASSWORD', 'wordpress' );
-define( 'DB_HOST', 'woo_store_db' );
+define( 'DB_USER', 'springbot' );
+define( 'DB_PASSWORD', 'password' );
+define( 'DB_HOST', 'mysql' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
