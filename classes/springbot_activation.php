@@ -1,7 +1,6 @@
 <?php
 
 if ( ! class_exists( 'Springbot_Activation' ) ) {
-
 	/**
 	 * Main / front controller class
 	 */
@@ -98,13 +97,17 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				return 500;
 			} else {
 				$decoded = json_decode( $response['body'], true );
+				if ( ! isset( $decoded['stores'] ) ) {
+					error_log( "Error during Springbot registration" );
+
+					return 500;
+				}
 				foreach ( $decoded['stores'] as $guid => $store ) {
 					$this->save_springbot_data( $decoded['security_token'], $guid, $store['springbot_store_id'] );
 				}
 
 				return $response['response']['code'];
 			}
-
 		}
 
 		/**
@@ -125,7 +128,6 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 
 			return false;
 		}
-
 
 		/**
 		 * Create an API token (key + secret) to send to the ETL
