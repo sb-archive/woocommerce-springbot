@@ -1,5 +1,7 @@
 version: '3.3'
 
+# this script is for testing and development purposes only
+
 services:
 
   wordpress_db:
