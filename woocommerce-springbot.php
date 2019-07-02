@@ -59,24 +59,24 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 				}
 
 				if ( is_admin() ) {
-
-					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
-					add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
+                    $GLOBALS["woocommerce_springbot"] = $this;
+					add_action( 'admin_menu', array( $GLOBALS["woocommerce_springbot"], 'springbot_menu_page' ) );
+					add_action( 'pre_user_query', array( $GLOBALS["woocommerce_springbot"], 'hide_springbot_api_user' ) );
 
 				} else {
 
 					if ( class_exists( 'Springbot_Footer' ) ) {
-						$springbot_footer = new Springbot_Footer;
-						add_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
+						$GLOBALS["springbot_footer"] = new Springbot_Footer;
+						add_action( 'wp_footer', array( $GLOBALS["springbot_footer"], 'show_async_script' ) );
 					}
 					if ( class_exists( 'Springbot_Redirect' ) ) {
-						$springbot_redirect = new Springbot_Redirect;
-						add_action( 'wp_loaded', array( $springbot_redirect, 'handle_redirect_posts' ) );
+						$GLOBALS["springbot_redirect"] = new Springbot_Redirect;
+						add_action( 'wp_loaded', array( $GLOBALS["springbot_redirect"], 'handle_redirect_posts' ) );
 					}
 					if ( class_exists( 'Springbot_Cart' ) ) {
-						$springbot_cart = new Springbot_Cart;
+						$GLOBALS["springbot_cart"] = new Springbot_Cart;
 						add_action( 'woocommerce_cart_loaded_from_session', array(
-							$springbot_cart,
+							$GLOBALS["springbot_cart",
 							'handle_cart_endpoint'
 						) );
 					}
@@ -90,13 +90,13 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 		}
 
 		// Hide the springbot user that we need for API access, so that it doesn't get deleted or a session timeout
-		public function hide_springbot_api_user( $user_search ) {
+		public static function hide_springbot_api_user( $user_search ) {
 			global $wpdb;
 			$user_search->query_where = str_replace( 'WHERE 1=1',
 				"WHERE 1=1 AND {$wpdb->users}.user_login != 'springbot'", $user_search->query_where );
 		}
 
-		public function springbot_menu_page() {
+		public static function springbot_menu_page() {
 
 			if ( class_exists( 'Springbot_Activation' ) ) {
 				$springbot_activation = new Springbot_Activation;

@@ -8,21 +8,18 @@ $uninstall_url = SPRINGBOT_WOO_ETL . '/woocommerce/destroy';
 function remove_springbot_plugin() {
     if ( is_admin() ) {
 
-        remove_action( 'admin_menu', array( 'WooCommerce_Springbot', 'springbot_menu_page' ) );
-        remove_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
+        remove_action( 'admin_menu', array( $GLOBALS["woocommerce_springbot"], 'springbot_menu_page' ) );
+        remove_action( 'pre_user_query', array( $GLOBALS["woocommerce_springbot"], 'hide_springbot_api_user' ) );
 
     } else {
 
         if ( class_exists( 'Springbot_Footer' ) ) {
-            $springbot_footer = new Springbot_Footer;
             remove_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
         }
         if ( class_exists( 'Springbot_Redirect' ) ) {
-            $springbot_redirect = new Springbot_Redirect;
             remove_action( 'wp_loaded', array( $springbot_redirect, 'handle_redirect_posts' ) );
         }
         if ( class_exists( 'Springbot_Cart' ) ) {
-            $springbot_cart = new Springbot_Cart;
             remove_action( 'woocommerce_cart_loaded_from_session', array(
                 $springbot_cart,
                 'handle_cart_endpoint'
