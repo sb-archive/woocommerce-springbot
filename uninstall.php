@@ -35,6 +35,8 @@ function remove_springbot_plugin() {
     }
 }
 
+remove_springbot_plugin();
+
 // $response = wp_remote_post( $registration_url, array(
 //     'method'      => 'POST',
 //     'timeout'     => 45,
