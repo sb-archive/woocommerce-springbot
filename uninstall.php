@@ -14,14 +14,14 @@ function remove_springbot_plugin() {
     } else {
 
         if ( class_exists( 'Springbot_Footer' ) ) {
-            remove_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
+            remove_action( 'wp_footer', array( $GLOBALS['springbot_footer'], 'show_async_script' ) );
         }
         if ( class_exists( 'Springbot_Redirect' ) ) {
-            remove_action( 'wp_loaded', array( $springbot_redirect, 'handle_redirect_posts' ) );
+            remove_action( 'wp_loaded', array( $GLOBALS['springbot_redirect'], 'handle_redirect_posts' ) );
         }
         if ( class_exists( 'Springbot_Cart' ) ) {
             remove_action( 'woocommerce_cart_loaded_from_session', array(
-                $springbot_cart,
+                $GLOBALS['springbot_cart'],
                 'handle_cart_endpoint'
             ) );
         }
