@@ -76,7 +76,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 					if ( class_exists( 'Springbot_Cart' ) ) {
 						$GLOBALS["springbot_cart"] = new Springbot_Cart;
 						add_action( 'woocommerce_cart_loaded_from_session', array(
-							$GLOBALS["springbot_cart",
+							$GLOBALS["springbot_cart"],
 							'handle_cart_endpoint'
 						) );
 					}
