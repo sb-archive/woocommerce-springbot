@@ -47,8 +47,9 @@ public function remove_springbot_etl_entry() {
         'httpversion' => '1.0',
         'blocking'    => false,
         'headers'     => array( 'Content-Type' => 'application/json; charset=utf-8' ),
-        'body'        => json_encode(
-            'store_id' => $store_id
+        'body'        => json_encode( {
+                'store_id' => $store_id
+            }
         ) ),
     ) ;
 
