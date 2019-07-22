@@ -3,7 +3,7 @@
  * Plugin Name: Springbot WooCommerce Integration
  * Plugin URI: https://www.springbot.com/
  * Description: Integration plugin between WooCommerce and Springbot
- * Version: 0.0.8
+ * Version: 0.0.9
  * Author: Springbot
  *
  * @package Woocommerce_Springbot
@@ -35,6 +35,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 
 			require_once( __DIR__ . '/classes/springbot_activation.php' );
 			require_once( __DIR__ . '/classes/springbot_cart.php' );
+			require_once( __DIR__ . '/classes/springbot_product.php' );
 			require_once( __DIR__ . '/classes/springbot_footer.php' );
 			require_once( __DIR__ . '/classes/springbot_options.php' );
 			require_once( __DIR__ . '/classes/springbot_redirect.php' );
@@ -73,6 +74,10 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 						$springbot_redirect = new Springbot_Redirect;
 						add_action( 'wp_loaded', array( $springbot_redirect, 'handle_redirect_posts' ) );
 					}
+					if ( class_exists( 'Springbot_Product' ) ) {
+						$springbot_product = new Springbot_Product;
+						add_action( 'wp_loaded', array( $springbot_product, 'handle_product_endpoint' ) );
+					}
 					if ( class_exists( 'Springbot_Cart' ) ) {
 						$springbot_cart = new Springbot_Cart;
 						add_action( 'woocommerce_cart_loaded_from_session', array(
@@ -90,7 +95,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 		}
 
 		// Hide the springbot user that we need for API access, so that it doesn't get deleted or a session timeout
-		public function hide_springbot_api_user( $user_search ) {
+		public static function hide_springbot_api_user( $user_search ) {
 			global $wpdb;
 			$user_search->query_where = str_replace( 'WHERE 1=1',
 				"WHERE 1=1 AND {$wpdb->users}.user_login != 'springbot'", $user_search->query_where );
