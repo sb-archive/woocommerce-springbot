@@ -63,6 +63,7 @@ if ( ! class_exists( 'Springbot_Product' ) ) {
                     }
 
                     echo json_encode( array(
+                        'successful' => true,
                         'product_id' => $product->get_id(),
                         'sku'        => $product->get_sku(),
                         'children'   => $children
