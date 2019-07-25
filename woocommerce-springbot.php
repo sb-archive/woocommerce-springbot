@@ -58,25 +58,25 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 					$springbot_webhooks = new Springbot_Webhooks();
 				}
 
-				if ( is_admin() ) {
-                    $GLOBALS["woocommerce_springbot"] = $this;
-					add_action( 'admin_menu', array( $GLOBALS["woocommerce_springbot"], 'springbot_menu_page' ) );
-					add_action( 'pre_user_query', array( $GLOBALS["woocommerce_springbot"], 'hide_springbot_api_user' ) );
+                if ( is_admin() ) {
+
+					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
+					add_action( 'pre_user_query', array( $this, 'hide_springbot_api_user' ) );
 
 				} else {
 
 					if ( class_exists( 'Springbot_Footer' ) ) {
-						$GLOBALS["springbot_footer"] = new Springbot_Footer;
-						add_action( 'wp_footer', array( $GLOBALS["springbot_footer"], 'show_async_script' ) );
+						$springbot_footer = new Springbot_Footer;
+						add_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
 					}
 					if ( class_exists( 'Springbot_Redirect' ) ) {
-						$GLOBALS["springbot_redirect"] = new Springbot_Redirect;
-						add_action( 'wp_loaded', array( $GLOBALS["springbot_redirect"], 'handle_redirect_posts' ) );
+						$springbot_redirect = new Springbot_Redirect;
+						add_action( 'wp_loaded', array( $springbot_redirect, 'handle_redirect_posts' ) );
 					}
 					if ( class_exists( 'Springbot_Cart' ) ) {
-						$GLOBALS["springbot_cart"] = new Springbot_Cart;
+						$springbot_cart = new Springbot_Cart;
 						add_action( 'woocommerce_cart_loaded_from_session', array(
-							$GLOBALS["springbot_cart"],
+							$springbot_cart,
 							'handle_cart_endpoint'
 						) );
 					}
