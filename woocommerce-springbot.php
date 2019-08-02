@@ -3,7 +3,7 @@
  * Plugin Name: Springbot WooCommerce Integration
  * Plugin URI: https://www.springbot.com/
  * Description: Integration plugin between WooCommerce and Springbot
- * Version: 0.0.9
+ * Version: 0.0.10
  * Author: Springbot
  *
  * @package Woocommerce_Springbot
@@ -59,10 +59,10 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 					$springbot_webhooks = new Springbot_Webhooks();
 				}
 
-				if ( is_admin() ) {
+                if ( is_admin() ) {
 
 					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
-					add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
+					add_action( 'pre_user_query', array( $this, 'hide_springbot_api_user' ) );
 
 				} else {
 
@@ -101,7 +101,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 				"WHERE 1=1 AND {$wpdb->users}.user_login != 'springbot'", $user_search->query_where );
 		}
 
-		public function springbot_menu_page() {
+		public static function springbot_menu_page() {
 
 			if ( class_exists( 'Springbot_Activation' ) ) {
 				$springbot_activation = new Springbot_Activation;
