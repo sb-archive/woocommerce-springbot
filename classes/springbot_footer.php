@@ -50,13 +50,13 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 							echo "<script type=\"text/javascript\">\n";
 							echo "  adroll_conversion_value = {$order->get_total()};\n";
 							echo "  adroll_currency = \"{$order->get_currency()}\";\n";
-							echo "window._sb_conversion = {\n"
-							echo "id: {$order_id},\n"
-							echo "total: {$order->get_total()},\n"
-							echo "ip: \"{$this->getIp()}\",\n"
-							echo "agent: \"{$this->getUserAgent()}\",\n"
-							echo "ookie: document.cookie.match('(^|;) ?__xlid=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?__xlid=([^;]*)(;|$)')[2] : null\n"
-							echo "}\n"
+							echo "window._sb_conversion = {\n";
+							echo "id: {$order_id},\n";
+							echo "total: {$order->get_total()},\n";
+							echo "ip: \"{$this->getIp()}\",\n";
+							echo "agent: \"{$this->getUserAgent()}\",\n";
+							echo "ookie: document.cookie.match('(^|;) ?__xlid=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?__xlid=([^;]*)(;|$)')[2] : null\n";
+							echo "}\n";
 							echo "</script>\n";
 						}
 					}
