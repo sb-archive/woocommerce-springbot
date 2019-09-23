@@ -13,8 +13,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 */
 		public function is_registered() {
 			if ( $user = get_user_by( 'login', 'springbot' ) ) {
-				return (bool) get_user_meta( $user->ID, 'springbot_store_id' )
-                && (bool) get_user_meta( $user->ID, 'springbot_security_token' );
+				return (bool) get_user_meta( $user->ID, 'springbot_store_id' );
 			}
 
 			return false;
