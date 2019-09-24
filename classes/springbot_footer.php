@@ -50,6 +50,13 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 							echo "<script type=\"text/javascript\">\n";
 							echo "  adroll_conversion_value = {$order->get_total()};\n";
 							echo "  adroll_currency = \"{$order->get_currency()}\";\n";
+							echo "window._sb_conversion = {\n";
+							echo "id: {$order_id},\n";
+							echo "total: {$order->get_total()},\n";
+							echo "ip: \"{$this->getIp()}\",\n";
+							echo "agent: \"{$this->getUserAgent()}\",\n";
+							echo "ookie: document.cookie.match('(^|;) ?__xlid=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?__xlid=([^;]*)(;|$)')[2] : null\n";
+							echo "}\n";
 							echo "</script>\n";
 						}
 					}
@@ -73,6 +80,29 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 			return null;
 		}
 
+		/**
+	     * @return string
+	     */
+	    private function getIp()
+	    {
+	        if (!empty($_SERVER['REMOTE_ADDR'])) {
+	            return $_SERVER['REMOTE_ADDR'];
+	        } else {
+	            return "";
+	        }
+	    }
+
+	    /**
+	     * @return string
+	     */
+	    private function getUserAgent()
+	    {
+	        if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+	            return $_SERVER['HTTP_USER_AGENT'];
+	        } else {
+	            return "";
+	        }
+	    }
 	}
 
 }
