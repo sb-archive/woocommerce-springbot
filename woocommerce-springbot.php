@@ -38,6 +38,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 			require_once( __DIR__ . '/classes/springbot_product.php' );
 			require_once( __DIR__ . '/classes/springbot_footer.php' );
 			require_once( __DIR__ . '/classes/springbot_options.php' );
+			require_once( __DIR__ . '/classes/springbot_user_options.php' );
 			require_once( __DIR__ . '/classes/springbot_redirect.php' );
 			require_once( __DIR__ . '/classes/springbot_webhooks.php' );
 
@@ -62,6 +63,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 				if ( is_admin() ) {
 
 					add_action( 'admin_menu', array( $this, 'springbot_menu_page' ) );
+					add_action( 'admin_menu', array( $this, 'springbot_options_page' ) );
 					add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
 
 				} else {
@@ -99,6 +101,23 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 			global $wpdb;
 			$user_search->query_where = str_replace( 'WHERE 1=1',
 				"WHERE 1=1 AND {$wpdb->users}.user_login != '" . SPRINGBOT_WP_USER . "'", $user_search->query_where );
+		}
+
+		public function springbot_options_page() {
+			if ( class_exists( 'Springbot_Activation' ) ) {
+				$springbot_activation = new Springbot_Activation;
+				if ( class_exists( 'Springbot_User_Options' ) ) {
+					$springbot_options = new Springbot_User_Options( $springbot_activation );
+					add_submenu_page(
+						null,
+						'Springbot Sync Options',
+						'Options',
+						'manage_options',
+						'springbot-options',
+						array( $springbot_options, 'create_admin_page' )
+					);
+				}
+			}
 		}
 
 		public function springbot_menu_page() {
