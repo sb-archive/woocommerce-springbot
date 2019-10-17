@@ -69,7 +69,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 		 * Get the GUID from the springbot user
 		 */
 		private function get_guid() {
-			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+			if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
 				$guid = get_user_meta( $user->ID, 'springbot_store_guid', true );
 				$guid = strtolower( $guid );
 				$guid = str_replace( '-', '', $guid );

@@ -17,3 +17,7 @@ define( 'SPRINGBOT_ASSETS_DOMAIN',
 define( 'SPRINGBOT_APP_URL',
 	getenv( 'SPRINGBOT_APP_URL' ) ? getenv( 'SPRINGBOT_APP_URL' ) : 'https://app.springbot.com'
 );
+
+define( 'SPRINGBOT_WP_USER',
+	getenv( 'SPRINGBOT_WP_USER' ) ? getenv( 'SPRINGBOT_WP_USER' ) : 'springbot'
+);

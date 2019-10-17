@@ -98,7 +98,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 		public static function hide_springbot_api_user( $user_search ) {
 			global $wpdb;
 			$user_search->query_where = str_replace( 'WHERE 1=1',
-				"WHERE 1=1 AND {$wpdb->users}.user_login != 'springbot'", $user_search->query_where );
+				"WHERE 1=1 AND {$wpdb->users}.user_login != '" . SPRINGBOT_WP_USER . "'", $user_search->query_where );
 		}
 
 		public function springbot_menu_page() {
