@@ -100,7 +100,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
             echo '<h2>Springbot API Secret/Key</h2>';
             echo '<p>The Springbot sync process is currently using the WP_USER <b>' . SPRINGBOT_WP_USER . '</b>.<br> You can modify which user is being used under config/springbot_config.php<br>';
             echo '<input type="text" id="consumer-secret" name="springbot[consumer-secret]" value="' . $this->secret . '"  readonly="readonly" /><br>';
-            echo '<input type="text" id="consumer-key" name="springbot[consumer-key]" value="' . $this->key . '"  readonly="readonly" /><br>';
+            echo '<input type="text" id="consumer-key" name="springbot[consumer-key]" value="ck_' . $this->key . '"  readonly="readonly" /><br>';
             echo '</div>';
         }
 
@@ -141,7 +141,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
 
             add_settings_field(
                 'springbot-guid',
-                'Store GUID',
+                'Store GUID (Use the one with dashes)',
                 array( $this, 'guid_callback' ),
                 'springbot-sync-options',
                 'setting_section_id'
@@ -157,7 +157,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
 
             add_settings_field(
                 'springbot-security-key',
-                'Store Security Key',
+                'Store Security Key (API Token)',
                 array( $this, 'securitykey_callback' ),
                 'springbot-sync-options',
                 'setting_section_id'
