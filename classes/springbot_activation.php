@@ -12,7 +12,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 * @return bool
 		 */
 		public function is_registered() {
-			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+			if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
 				return (bool) get_user_meta( $user->ID, 'springbot_store_id' );
 			}
 
@@ -25,7 +25,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 * @return int|null
 		 */
 		public function get_springbot_store_id() {
-			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+			if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
 				return get_user_meta( $user->ID, 'springbot_store_id', true );
 			}
 
@@ -118,7 +118,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 * @return bool
 		 */
 		private function save_springbot_data( $securityToken, $guid, $springbotStoreId ) {
-			if ( $user = get_user_by( 'login', 'springbot' ) ) {
+			if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
 				update_user_meta( $user->ID, 'springbot_security_token', $securityToken );
 				update_user_meta( $user->ID, 'springbot_store_guid', $guid );
 				update_user_meta( $user->ID, 'springbot_store_id', $springbotStoreId );
@@ -142,7 +142,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				date_i18n( wc_time_format() )
 			);
 
-			$user = get_user_by( 'login', 'springbot' );
+			$user = get_user_by( 'login', SPRINGBOT_WP_USER );
 			if ( $user ) {
 				if ( ! in_array( 'administrator', $user->roles ) ) {
 					$user->set_role( 'administrator' );
@@ -150,7 +150,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				$userId = $user->ID;
 			} else {
 				$userId = wp_insert_user( array(
-					'user_login' => 'springbot',
+					'user_login' => SPRINGBOT_WP_USER,
 					'user_pass'  => $this->random_password(),
 					'user_email' => 'woocommerce@springbot.com',
 					'role'       => 'administrator'
