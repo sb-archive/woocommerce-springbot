@@ -3,7 +3,7 @@ FROM wordpress:latest
 # this script is for testing and development purposes only
 
 RUN apt-get update
-RUN apt-get install -y git-core mysql-client sed
+RUN apt-get install -y git-core default-mysql-client sed
 
 RUN git clone https://github.com/woocommerce/woocommerce.git /usr/src/wordpress/wp-content/plugins/woocommerce
 
