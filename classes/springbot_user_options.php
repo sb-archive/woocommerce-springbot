@@ -21,25 +21,14 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
          * @param Springbot_Activation $activation
          */
         public function __construct( Springbot_Activation $activation ) {
-            global $wpdb;
-
             add_action( 'admin_init', array( $this, 'page_init' ) );
             add_action( 'admin_notices', array( $this, 'my_error_notice' ) );
-
-            $user = get_user_by( 'login', SPRINGBOT_WP_USER );
-            if ( !$user ) {
-                $redirect = 'admin.php';
-                $redirect = add_query_arg( 'msg', 401, $redirect );
-                $redirect = add_query_arg( 'page', 'springbot', $redirect );
-                wp_redirect( $redirect );
-                exit;
-            }
 
             if ( isset( $_POST['springbot']['action'] ) ) {
                 if ( ! current_user_can( 'activate_plugins' ) ) {
                     $redirect = 'admin.php';
                     $redirect = add_query_arg( 'msg', 'not_admin', $redirect );
-                    $redirect = add_query_arg( 'page', 'springbot', $redirect );
+                    $redirect = add_query_arg( 'page', 'admin', $redirect );
                     wp_redirect( $redirect );
                     exit;
                 } else {
@@ -47,21 +36,12 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
                     if ( !$code ) {
                         $redirect = 'admin.php';
                         $redirect = add_query_arg( 'msg', 401, $redirect );
-                        $redirect = add_query_arg( 'page', 'springbot', $redirect );
+                        $redirect = add_query_arg( 'page', 'admin', $redirect );
                         wp_redirect( $redirect );
                         exit;
                     }
                 }
             }
-            
-            $userId = $user->ID;
-            $table = $wpdb->prefix . 'woocommerce_api_keys';
-            $row = $wpdb->get_row( 'SELECT * from ' . $table . ' WHERE user_id = ' .  $userId . ';', ARRAY_A );
-            $this->securityKey = get_user_meta( $userId, 'springbot_security_token', true );
-            $this->guid = get_user_meta( $userId, 'springbot_store_guid', true );
-            $this->storeId = get_user_meta( $userId, 'springbot_store_id', true );
-            $this->secret = $row['consumer_secret'];
-            $this->key = $row['consumer_key'];
         }
 
         /**
@@ -126,6 +106,26 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
          * Register and add settings
          */
         public function page_init() {
+            global $wpdb;
+
+            $user = get_user_by( 'login', SPRINGBOT_WP_USER );
+            if ( $user ) {
+                $userId = $user->ID;
+                $table = $wpdb->prefix . 'woocommerce_api_keys';
+                $row = $wpdb->get_row( 'SELECT * from ' . $table . ' WHERE user_id = ' .  $userId . ';', ARRAY_A );
+                $this->securityKey = get_user_meta( $userId, 'springbot_security_token', true );
+                $this->guid = get_user_meta( $userId, 'springbot_store_guid', true );
+                $this->storeId = get_user_meta( $userId, 'springbot_store_id', true );
+                $this->secret = $row['consumer_secret'];
+                $this->key = $row['consumer_key'];
+            } else {
+                $this->securityKey = "Not Set Up Yet";
+                $this->guid = "Not Set Up Yet";
+                $this->storeId = "Not Set Up Yet";
+                $this->secret = "Not Set Up Yet";
+                $this->key = "Not Set Up Yet";
+            }
+
             register_setting(
                 'springbot_option_group',
                 'springbot_option_name',
