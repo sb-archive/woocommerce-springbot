@@ -13,7 +13,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 			if ( $guid = $this->get_guid() ) {
 
 				// Load the async script from Springbot
-				echo "<script type=\"text/javascript\">\n";
+				echo "<script data-cfasync=\"false\" type=\"text/javascript\">\n";
 				echo "  var _sbparams = _sbparams || [];\n";
 				echo "  (function () {\n";
 				echo "   var sb = document.createElement('script');\n";
