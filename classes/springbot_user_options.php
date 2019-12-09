@@ -15,6 +15,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
         private $guid = '';
         private $storeId = '';
         private $newKey = '';
+        private $activation;
 
         /**
          * Springbot_Options constructor.
