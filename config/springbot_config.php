@@ -21,3 +21,7 @@ define( 'SPRINGBOT_APP_URL',
 define( 'SPRINGBOT_WP_USER',
 	getenv( 'SPRINGBOT_WP_USER' ) ? getenv( 'SPRINGBOT_WP_USER' ) : 'springbot'
 );
+
+define( 'SPRINGBOT_WP_EMAIL',
+	getenv( 'SPRINGBOT_WP_EMAIL' ) ? getenv( 'SPRINGBOT_WP_EMAIL' ) : 'woocommerce@springbot.com'
+);

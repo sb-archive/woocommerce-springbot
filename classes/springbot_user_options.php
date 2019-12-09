@@ -84,7 +84,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
             $userId = wp_insert_user( array(
                 'user_login' => SPRINGBOT_WP_USER,
                 'user_pass'  => $this->activation->random_password(),
-                'user_email' => 'woocommerce@springbot.com',
+                'user_email' => SPRINGBOT_WP_EMAIL,
                 'role'       => 'administrator'
             ) );
 
