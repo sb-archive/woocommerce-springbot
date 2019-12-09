@@ -51,7 +51,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
                 
                 if ( !$code ) {
                     $redirect = 'admin.php';
-                    $redirect = add_query_arg( 'msg', 401, $redirect );
+                    $redirect = add_query_arg( 'msg', 500, $redirect );
                     $redirect = add_query_arg( 'page', 'admin', $redirect );
                     wp_redirect( $redirect );
                     exit;
@@ -87,6 +87,10 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
                 'user_email' => SPRINGBOT_WP_EMAIL,
                 'role'       => 'administrator'
             ) );
+            
+            if (!is_numeric($userId)) {
+                return false;
+            }
 
             $consumer_key    = 'ck_' . wc_rand_hash();
             $consumer_secret = 'cs_' . wc_rand_hash();
