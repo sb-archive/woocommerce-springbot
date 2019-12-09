@@ -51,7 +51,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
          *
          * @return bool
          */
-        private function save_springbot_data( $securityToken, $guid, $springbotStoreId ) {
+        private function save_springbot_data( $springbotStoreId, $guid, $securityToken ) {
             if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
                 update_user_meta( $user->ID, 'springbot_security_token', $securityToken );
                 update_user_meta( $user->ID, 'springbot_store_guid', $guid );
