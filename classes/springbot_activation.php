@@ -111,13 +111,32 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		}
 
 		/**
+		 * Generate a random password for our springbot user
+		 *
+		 * @param int $length
+		 *
+		 * @return string
+		 */
+		public function random_password( $length = 12 ) {
+			$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+			$count = mb_strlen( $chars );
+
+			for ( $i = 0, $result = ''; $i < $length; $i ++ ) {
+				$index  = rand( 0, $count - 1 );
+				$result .= mb_substr( $chars, $index, 1 );
+			}
+
+			return $result;
+		}
+
+		/**
 		 * @param $securityToken
 		 * @param $guid
 		 * @param $springbotStoreId
 		 *
 		 * @return bool
 		 */
-		private function save_springbot_data( $securityToken, $guid, $springbotStoreId ) {
+		public function save_springbot_data( $securityToken, $guid, $springbotStoreId ) {
 			if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
 				update_user_meta( $user->ID, 'springbot_security_token', $securityToken );
 				update_user_meta( $user->ID, 'springbot_store_guid', $guid );
@@ -152,7 +171,7 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				$userId = wp_insert_user( array(
 					'user_login' => SPRINGBOT_WP_USER,
 					'user_pass'  => $this->random_password(),
-					'user_email' => 'woocommerce@springbot.com',
+					'user_email' => SPRINGBOT_WP_EMAIL,
 					'role'       => 'administrator'
 				) );
 			}
@@ -188,25 +207,6 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 			       . substr( $hash, 12, 4 ) . '-'
 			       . substr( $hash, 16, 4 ) . '-'
 			       . substr( $hash, 20, 12 );
-		}
-
-		/**
-		 * Generate a random password for our springbot user
-		 *
-		 * @param int $length
-		 *
-		 * @return string
-		 */
-		private function random_password( $length = 12 ) {
-			$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-			$count = mb_strlen( $chars );
-
-			for ( $i = 0, $result = ''; $i < $length; $i ++ ) {
-				$index  = rand( 0, $count - 1 );
-				$result .= mb_substr( $chars, $index, 1 );
-			}
-
-			return $result;
 		}
 
 		/**

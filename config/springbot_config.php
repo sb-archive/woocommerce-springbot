@@ -1,6 +1,6 @@
 <?php
 
-define( 'SPRINGBOT_PLUGIN_VERSION', '0.0.16.400' );
+define( 'SPRINGBOT_PLUGIN_VERSION', '0.0.17.400' );
 
 define( 'SPRINGBOT_NAME', 'WooCommerce Springbot Integration' );
 define( 'SPRINGBOT_REQUIRED_PHP_VERSION', '5.3' );
@@ -20,4 +20,8 @@ define( 'SPRINGBOT_APP_URL',
 
 define( 'SPRINGBOT_WP_USER',
 	getenv( 'SPRINGBOT_WP_USER' ) ? getenv( 'SPRINGBOT_WP_USER' ) : 'springbot'
+);
+
+define( 'SPRINGBOT_WP_EMAIL',
+	getenv( 'SPRINGBOT_WP_EMAIL' ) ? getenv( 'SPRINGBOT_WP_EMAIL' ) : 'woocommerce@springbot.com'
 );

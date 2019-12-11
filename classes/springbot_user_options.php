@@ -14,6 +14,8 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
         private $securityKey = '';
         private $guid = '';
         private $storeId = '';
+        private $newKey = '';
+        private $activation;
 
         /**
          * Springbot_Options constructor.
@@ -21,6 +23,7 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
          * @param Springbot_Activation $activation
          */
         public function __construct( Springbot_Activation $activation ) {
+            $this->activation = $activation;
             add_action( 'admin_init', array( $this, 'page_init' ) );
             add_action( 'admin_notices', array( $this, 'my_error_notice' ) );
 
@@ -31,57 +34,111 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
                     $redirect = add_query_arg( 'page', 'admin', $redirect );
                     wp_redirect( $redirect );
                     exit;
-                } else {
-                    $code = $this->save_springbot_data( $_POST['springbot']['store-id'], $_POST['springbot']['guid'], $_POST['springbot']['security-key'] );
-                    if ( !$code ) {
-                        $redirect = 'admin.php';
-                        $redirect = add_query_arg( 'msg', 401, $redirect );
-                        $redirect = add_query_arg( 'page', 'admin', $redirect );
-                        wp_redirect( $redirect );
-                        exit;
-                    }
                 }
+                if ( isset( $_POST['springbot']['re-create'] ) ) {
+                    $code = $this->re_create_user_auth(
+                        $_POST['springbot']['security-key'],
+                        $_POST['springbot']['guid'], 
+                        $_POST['springbot']['store-id']
+                    );
+                } else {
+                    $code = $this->activation->save_springbot_data(
+                        $_POST['springbot']['security-key'],
+                        $_POST['springbot']['guid'], 
+                        $_POST['springbot']['store-id']
+                    );
+                }
+                
+                if ( !$code ) {
+                    $redirect = 'admin.php';
+                    $redirect = add_query_arg( 'msg', 500, $redirect );
+                    $redirect = add_query_arg( 'page', 'admin', $redirect );
+                    wp_redirect( $redirect );
+                    exit;
+                }
+                
             }
         }
 
         /**
-         * @param $securityToken
-         * @param $guid
-         * @param $springbotStoreId
+         * This will re-create the user, meta data, and api integration for the store.
          *
-         * @return bool
+         * @param $springbotStoreId
+         * @param $guid
+         * @param $securityToken
+         *
+         * @return bool|array
          */
-        private function save_springbot_data( $springbotStoreId, $guid, $securityToken ) {
-            if ( $user = get_user_by( 'login', SPRINGBOT_WP_USER ) ) {
-                update_user_meta( $user->ID, 'springbot_security_token', $securityToken );
-                update_user_meta( $user->ID, 'springbot_store_guid', $guid );
-                update_user_meta( $user->ID, 'springbot_store_id', $springbotStoreId );
-
-                return true;
+        private function re_create_user_auth($securityToken, $guid, $springbotStoreId) {
+            global $wpdb;
+            if ($user = get_user_by( 'login', SPRINGBOT_WP_USER )) {
+                $wpdb->delete($wpdb->prefix."woocommerce_api_keys", ['user_id' => $user->ID], '%d');
+                // We need to delete the user because in instances where they have locked us 
+                // out because of a login timeout, it will continue to log us out and cause 
+                // authorization issues unless we change users.
+                if( !wp_delete_user( $user->ID ) ){
+                    return false;
+                }
             }
 
-            return false;
+            $userId = wp_insert_user( array(
+                'user_login' => SPRINGBOT_WP_USER,
+                'user_pass'  => $this->activation->random_password(),
+                'user_email' => SPRINGBOT_WP_EMAIL,
+                'role'       => 'administrator'
+            ) );
+            
+            if (!is_numeric($userId)) {
+                return false;
+            }
+
+            $consumer_key    = 'ck_' . wc_rand_hash();
+            $consumer_secret = 'cs_' . wc_rand_hash();
+            $description = sprintf(
+                __( '%1$s - API (re-created on %2$s at %3$s).', 'woocommerce' ),
+                wc_clean( 'Springbot' ),
+                date_i18n( wc_date_format() ),
+                date_i18n( wc_time_format() )
+            );
+
+            $wpdb->insert(
+                $wpdb->prefix . 'woocommerce_api_keys',
+                array(
+                    'user_id'         => $userId,
+                    'description'     => $description,
+                    'permissions'     => 'read_write',
+                    'consumer_key'    => wc_api_hash( $consumer_key ),
+                    'consumer_secret' => $consumer_secret,
+                    'truncated_key'   => substr( $consumer_key, - 7 ),
+                ),
+                array( '%d', '%s', '%s', '%s', '%s', '%s' )
+            );
+            $this->activation->save_springbot_data($securityToken, $guid, $springbotStoreId);
+            $this->newKey = $consumer_key;
+
+            return true;
         }
 
         /**
          * Options page callback
          */
         public function create_admin_page() {
-
-            $activation = new Springbot_Activation();
             echo '<div class="wrap">';
             echo '<h1>Springbot Options</h1>';
             echo '<form method="post" action="' . esc_url( admin_url( 'admin.php' ) ) . '?page=springbot-options">';
             echo '<input type="hidden" name="springbot[action]" value="edit_options">';
             settings_fields( 'springbot_option_group' );
             do_settings_sections( 'springbot-sync-options' );
-            submit_button();
-            echo '</form>';
             echo '<h2>Springbot API Secret/Key</h2>';
             echo '<p>The Springbot sync process is currently using the WP_USER <b>' . SPRINGBOT_WP_USER . '</b>.<br> You can modify which user is being used under config/springbot_config.php<br>';
             echo '<input type="text" id="consumer-secret" name="springbot[consumer-secret]" value="' . $this->secret . '"  readonly="readonly" /><br>';
-            echo '<input type="text" id="consumer-key" name="springbot[consumer-key]" value="ck_' . $this->key . '"  readonly="readonly" /><br>';
+            echo '<input type="submit" id="re_create_auth" name="springbot[re-create]" value="Re-Create API Authorization"/><br>';
+            submit_button();
+            echo '</form>';
             echo '</div>';
+            if (!empty($this->newKey)) {
+                echo "<p>Your new consumer_key will be <b>" . $this->newKey . "</b></p>";
+            }
         }
 
         /**
@@ -117,7 +174,6 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
                 $this->guid = get_user_meta( $userId, 'springbot_store_guid', true );
                 $this->storeId = get_user_meta( $userId, 'springbot_store_id', true );
                 $this->secret = $row['consumer_secret'];
-                $this->key = $row['consumer_key'];
             } else {
                 $this->securityKey = "Not Set Up Yet";
                 $this->guid = "Not Set Up Yet";
