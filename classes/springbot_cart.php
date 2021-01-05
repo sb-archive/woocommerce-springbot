@@ -41,7 +41,7 @@ if ( ! class_exists( 'Springbot_Cart' ) ) {
 			if ( $_POST['newsletter_subscribe'] ) {
 				$email = $_POST['newsletter_subscribe'];
 				if ( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
-					Springbot_Webhooks::send_webhook( $email, 0, false, $email );
+					Springbot_Webhooks::send_webhook( 'subscribers', 0, false, $email );
 				}
 			}
 		}
