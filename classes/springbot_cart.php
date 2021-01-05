@@ -26,6 +26,26 @@ if ( ! class_exists( 'Springbot_Cart' ) ) {
 			return $permalink;
 		}
 
+		public function show_subscribe_field($checkout ) {
+
+			woocommerce_form_field( 'newsletter_subscribe', array(
+				'type'          => 'checkbox',
+				'checked'       => true,
+				'class'         => array('form-row-wide'),
+				'label'         => __('Subscribe to Newsletter'),
+			), $checkout->get_value( 'newsletter_subscribe' ));
+
+		}
+
+		function process_subscribe_field() {
+			if ( $_POST['newsletter_subscribe'] ) {
+				$email = $_POST['newsletter_subscribe'];
+				if ( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+					Springbot_Webhooks::send_webhook( $email, 0, false, $email );
+				}
+			}
+		}
+
 		/**
 		 * Return a numeric cart token based on the cart hash
 		 *

@@ -83,9 +83,9 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		public function delete_post( $postId ) {
 			if ( $post = get_post( $postId ) ) {
 				if ( $post->post_type === 'product' ) {
-					$this->send_webhook( 'product', $postId, true );
+					self::send_webhook( 'product', $postId, true );
 				} elseif ( $post->post_type === 'shop_order' ) {
-					$this->send_webhook( 'order', $postId, true );
+					self::send_webhook( 'order', $postId, true );
 				}
 			}
 		}
@@ -96,9 +96,9 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		public function trash_post( $postId ) {
 			if ( $post = get_post( $postId ) ) {
 				if ( $post->post_type === 'product' ) {
-					$this->send_webhook( 'product', $postId, true );
+					self::send_webhook( 'product', $postId, true );
 				} elseif ( $post->post_type === 'shop_order' ) {
-					$this->send_webhook( 'order', $postId, true );
+					self::send_webhook( 'order', $postId, true );
 				}
 			}
 		}
@@ -107,14 +107,14 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param int $termId
 		 */
 		public function delete_category( $termId ) {
-			$this->send_webhook( 'categories', $termId, true );
+			self::send_webhook( 'categories', $termId, true );
 		}
 
 		/**
 		 * @param int $userId
 		 */
 		public function delete_customer( $userId ) {
-			$this->send_webhook( 'customers', $userId, true );
+			self::send_webhook( 'customers', $userId, true );
 		}
 
 		/**
@@ -200,7 +200,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 					}
 
 					$cartId = (int) Springbot_Cart::get_cart_id( $hash );
-					$this->send_webhook( 'carts', $cartId, false, array(
+					self::send_webhook( 'carts', $cartId, false, array(
 						'id'         => $cartId,
 						'hash'       => $hash,
 						'email'      => $email,
@@ -213,7 +213,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 					) );
 					$cartId = (int) Springbot_Cart::get_cart_id( $hash );
 					if ( $cartId > 0 ) {
-						$this->send_webhook( 'carts', $cartId, false, array(
+						self::send_webhook( 'carts', $cartId, false, array(
 							'id'         => $cartId,
 							'hash'       => $hash,
 							'email'      => $customer->get_email(),
@@ -268,7 +268,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				}
 
 				$pathParts = array_reverse( $pathParts );
-				$this->send_webhook( 'categories', $categoryId, false, array(
+				self::send_webhook( 'categories', $categoryId, false, array(
 					'name' => $category->name,
 					'path' => implode( '/', $pathParts ),
 					'url'  => get_term_link( $categoryId, 'product_cat' )
@@ -282,7 +282,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param int $customerId
 		 */
 		public function send_customer_webhook( $customerId ) {
-			$this->send_webhook( 'customers', $customerId );
+			self::send_webhook( 'customers', $customerId );
 		}
 
 		/**
@@ -292,7 +292,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param array $oldData
 		 */
 		public function send_customer_webhook_2( $customerId, $oldData ) {
-			$this->send_webhook( 'customers', $customerId );
+			self::send_webhook( 'customers', $customerId );
 		}
 
 		/**
@@ -304,7 +304,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 			if ( $product instanceof WC_Product ) {
 				$product = $product->get_id();
 			}
-			$this->send_webhook( 'products', $product );
+			self::send_webhook( 'products', $product );
 		}
 
 		/**
@@ -313,7 +313,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param int $orderId
 		 */
 		public function send_order_webhook( $orderId ) {
-			$this->send_webhook( 'orders', $orderId );
+			self::send_webhook( 'orders', $orderId );
 		}
 
 		/**
@@ -324,7 +324,7 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 		 * @param bool $deleted
 		 * @param array $extra
 		 */
-		private function send_webhook( $type, $id, $deleted = false, $extra = array() ) {
+		public static function send_webhook( $type, $id, $deleted = false, $extra = array() ) {
 
 			if ( ! is_numeric( $id ) ) {
 				error_log( "ID is non-numeric for webhook handler, type: {$type}" );
@@ -337,8 +337,6 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				return;
 			}
 			self::$called[ $key ] = true;
-
-
 
 			$activation = new Springbot_Activation();
 			if ( $activation->is_registered() ) {
