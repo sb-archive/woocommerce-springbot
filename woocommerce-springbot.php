@@ -68,8 +68,6 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 
 				} else {
 
-
-
 					if ( class_exists( 'Springbot_Footer' ) ) {
 						$springbot_footer = new Springbot_Footer;
 						add_action( 'wp_footer', array( $springbot_footer, 'show_async_script' ) );
@@ -90,7 +88,6 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 						) );
 						add_action( 'woocommerce_after_order_notes', array( $springbot_cart, 'show_subscribe_field') );
 						add_action( 'woocommerce_checkout_process', array( $springbot_cart, 'process_subscribe_field') );
-
 					}
 				}
 
