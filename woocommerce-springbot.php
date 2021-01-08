@@ -86,6 +86,8 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 							$springbot_cart,
 							'handle_cart_endpoint'
 						) );
+						add_action( 'woocommerce_after_order_notes', array( $springbot_cart, 'show_subscribe_field') );
+						add_action( 'woocommerce_checkout_process', array( $springbot_cart, 'process_subscribe_field') );
 					}
 				}
 
