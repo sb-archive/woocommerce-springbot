@@ -22,14 +22,10 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				echo "   sb.async = true;\n";
 				echo "   sb.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + '" . SPRINGBOT_ASSETS_DOMAIN . "/async/preload/{$guid}.js'\n";
 				echo "   fs.parentNode.insertBefore(sb, fs);\n";
-				echo "  })();\n";
-				echo "</script>\n";
 
 				// Load the view pixel if on a product page
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
 
-					echo "<script type=\"text/javascript\">\n";
-					echo "(document.addEventListener('DOMContentLoaded', function() {\n";
 					echo "  var pixelContainer = document.createElement(\"div\");\n";
 					echo "  var pixel = document.createElement(\"IMG\");\n";
 					echo "  pixel.setAttribute(\"style\", \"height: 1px; width: 1px; position:absolute; visibility:hidden\");\n";
@@ -42,15 +38,14 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					echo "  pixel.className = 'sb-pixel';\n";
 					echo "  pixelContainer.appendChild(pixel);\n";
 					echo "  document.body.appendChild(pixelContainer);\n";
-					echo "}, false))\n";
-					echo "</script>\n";
 
 					// Set the product_id for our async script to use if needed
-					echo "<script type=\"text/javascript\">\n";
 					echo "  var Springbot = Springbot || {};\n";
 					echo "  Springbot.product_id = \"{$product->get_id()}\";\n";
-					echo "</script>\n";
 				}
+
+				echo "  })();\n";
+				echo "</script>\n";
 
 				// Load AdRoll conversion tracking on checkout success (aka order received) page
 				if ( is_order_received_page() ) {
