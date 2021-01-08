@@ -32,7 +32,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					     . "&pageurl=" . urlencode( $product->get_permalink() )
 					     . "&product_id=" . $product->get_id();
 					     if ( $_GET['uuid'] ) {
-						     $pixel .= "&uuid=" . urlencode( $_GET['uuid'] ) . "\"";
+						     $pixel .= "&uuid=" . urlencode( $_GET['uuid'] );
 					     }
 					$pixel .= "&sku=" . urlencode( $product->get_sku() ) . "\""
 					     . "style=\"position:absolute; visibility:hidden\">\n";
