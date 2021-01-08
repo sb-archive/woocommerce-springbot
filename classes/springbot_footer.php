@@ -27,6 +27,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
 
 					echo "sb.onload = function() {\n";
+					echo "window.addEventListener('load', function(event) {\n";
 					echo "  var pixelContainer = document.createElement(\"div\");\n";
 					echo "  var pixel = document.createElement(\"IMG\");\n";
 					echo "  pixel.setAttribute(\"style\", \"height: 1px; width: 1px; position:absolute; visibility:hidden\");\n";
@@ -43,6 +44,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					// Set the product_id for our async script to use if needed
 					echo "  var Springbot = Springbot || {};\n";
 					echo "  Springbot.product_id = \"{$product->get_id()}\";\n";
+					echo "});\n";
 					echo "};\n";
 
 				}
