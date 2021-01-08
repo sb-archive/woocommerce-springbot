@@ -32,7 +32,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					echo "var pixelContainer = document.createElement(\"div\");\n";
 					echo "var pixel = document.createElement(\"IMG\");\n";
 					echo "pixel.setAttribute(\"style\", \"height: 1px; width: 1px; position:absolute; visibility:hidden\");\n";
-					echo "pixel.setAttribute(\"src\", \"". SPRINGBOT_WOO_ETL ." + \"/pixel/view"
+					echo "pixel.setAttribute(\"src\", \"". SPRINGBOT_WOO_ETL ."/pixel/view"
 						. "?guid={$this->get_guid()}"
 				        . "&sku=". urlencode( $product->get_sku() )
 					    . "&product_id={$product->get_id()}"
