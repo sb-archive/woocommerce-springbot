@@ -29,7 +29,6 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
 
 					echo "<script type=\"text/javascript\">\n";
-					echo "(function () {\n";
 					echo "(document.addEventListener('DOMContentLoaded', function() {\n";
 					echo "  var pixelContainer = document.createElement(\"div\");\n";
 					echo "  var pixel = document.createElement(\"IMG\");\n";
@@ -43,8 +42,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					echo "  pixel.className = 'sb-pixel';\n";
 					echo "  pixelContainer.appendChild(pixel);\n";
 					echo "  document.body.appendChild(pixelContainer);\n";
-					echo "}, false);\n";
-					echo "})();\n";
+					echo "}, false))\n";
 					echo "</script>\n";
 
 					// Set the product_id for our async script to use if needed
