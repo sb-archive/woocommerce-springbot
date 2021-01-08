@@ -27,16 +27,12 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 
 				// Load the view pixel if on a product page
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
-					$pixel = "<img src=\"" . SPRINGBOT_WOO_ETL . "/pixel/view"
+					echo "<img src=\"" . SPRINGBOT_WOO_ETL . "/pixel/view"
 					     . "?guid=" . $this->get_guid()
 					     . "&pageurl=" . urlencode( $product->get_permalink() )
-					     . "&product_id=" . $product->get_id();
-					     if ( $_GET['uuid'] ) {
-						     $pixel .= "&uuid=" . urlencode( $_GET['uuid'] );
-					     }
-					$pixel .= "&sku=" . urlencode( $product->get_sku() ) . '" '
+					     . "&product_id=" . $product->get_id()
+					     . "&sku=" . urlencode( $product->get_sku() ) . "\" "
 					     . "style=\"position:absolute; visibility:hidden\">\n";
-				    echo $pixel;
 
 					// Set the product_id for our async script to use if needed
 					echo "<script type=\"text/javascript\">\n";
