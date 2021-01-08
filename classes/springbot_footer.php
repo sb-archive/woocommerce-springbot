@@ -29,18 +29,22 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
 
 					echo "<script type=\"text/javascript\">\n";
-					echo "var pixelContainer = document.createElement(\"div\");\n";
-					echo "var pixel = document.createElement(\"IMG\");\n";
-					echo "pixel.setAttribute(\"style\", \"height: 1px; width: 1px; position:absolute; visibility:hidden\");\n";
-					echo "pixel.setAttribute(\"src\", \"". SPRINGBOT_WOO_ETL ."/pixel/view"
-						. "?guid={$this->get_guid()}"
-				        . "&sku=". urlencode( $product->get_sku() )
-					    . "&product_id={$product->get_id()}"
-					    . "&pageurl=".urlencode( $product->get_permalink() )
-					    . "&uuid=\"+SB.util.uuid());\n";
-					echo "pixel.className = 'sb-pixel';\n";
-					echo "pixelContainer.appendChild(pixel);\n";
-					echo "document.body.appendChild(pixelContainer);\n";
+					echo "(function () {\n";
+					echo "(document.addEventListener('DOMContentLoaded', function() {\n";
+					echo "  var pixelContainer = document.createElement(\"div\");\n";
+					echo "  var pixel = document.createElement(\"IMG\");\n";
+					echo "  pixel.setAttribute(\"style\", \"height: 1px; width: 1px; position:absolute; visibility:hidden\");\n";
+					echo "  pixel.setAttribute(\"src\", \"". SPRINGBOT_WOO_ETL ."/pixel/view"
+					     . "?guid={$this->get_guid()}"
+					     . "&sku=". urlencode( $product->get_sku() )
+					     . "&product_id={$product->get_id()}"
+					     . "&pageurl=".urlencode( $product->get_permalink() )
+					     . "&uuid=\"+SB.util.uuid());\n";
+					echo "  pixel.className = 'sb-pixel';\n";
+					echo "  pixelContainer.appendChild(pixel);\n";
+					echo "  document.body.appendChild(pixelContainer);\n";
+					echo "}, false);\n";
+					echo "})();\n";
 					echo "</script>\n";
 
 					// Set the product_id for our async script to use if needed
