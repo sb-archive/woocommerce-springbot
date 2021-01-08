@@ -29,7 +29,7 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
 
 					echo "<script type=\"text/javascript\">\n";
-					echo "var pixelContainer = document.createElement(\"div\");"\n;
+					echo "var pixelContainer = document.createElement(\"div\");\n";
 					echo "var pixel = document.createElement(\"IMG\");\n";
 					echo "var uuidExtension = '&uuid=' + SB.util.uuid();\n";
 					echo "pixel.setAttribute(\"style\", \"height: 1px; width: 1px; position:absolute; visibility:hidden\");\n";
@@ -37,7 +37,8 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 						. "?guid={$this->get_guid()}"
 				        . "&sku=". urlencode( $product->get_sku() )
 					    . "&product_id={$product->get_id()}"
-					    . "&pageurl=".urlencode( $product->get_permalink() ).");\n";
+					    . "&pageurl=".urlencode( $product->get_permalink() )
+					    . "&uuid=\"+SB.util.uuid());\n";
 					echo "pixel.className = 'sb-pixel';\n";
 					echo "pixelContainer.appendChild(pixel);\n";
 					echo "document.body.appendChild(pixelContainer);\n";
