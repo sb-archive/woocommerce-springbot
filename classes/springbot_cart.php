@@ -35,7 +35,6 @@ if ( ! class_exists( 'Springbot_Cart' ) ) {
 			$checked = $checkout->get_value( 'newsletter_subscribe' ) ? $checkout->get_value( 'newsletter_subscribe' ) : 1;
 			woocommerce_form_field( 'newsletter_subscribe', array(
 				'type'          => 'checkbox',
-				'checked'       => true,
 				'class'         => array('form-row-wide'),
 				'label'         => __('Subscribe to Newsletter'),
 			), $checked );

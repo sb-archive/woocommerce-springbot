@@ -26,7 +26,6 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				// Load the view pixel if on a product page
 				if ( is_product() && ( $product instanceof WC_Product ) ) {
 
-					echo "sb.onload = function() {\n";
 					echo "window.addEventListener('load', function(event) {\n";
 					echo "  var pixelContainer = document.createElement(\"div\");\n";
 					echo "  var pixel = document.createElement(\"IMG\");\n";
@@ -45,7 +44,6 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					echo "  var Springbot = Springbot || {};\n";
 					echo "  Springbot.product_id = \"{$product->get_id()}\";\n";
 					echo "});\n";
-					echo "};\n";
 
 				}
 

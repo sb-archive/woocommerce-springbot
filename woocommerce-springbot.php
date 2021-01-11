@@ -41,6 +41,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 			require_once( __DIR__ . '/classes/springbot_user_options.php' );
 			require_once( __DIR__ . '/classes/springbot_redirect.php' );
 			require_once( __DIR__ . '/classes/springbot_webhooks.php' );
+			require_once( __DIR__ . '/classes/springbot_settings.php' );
 
 			if ( $this->springbot_requirements_met() ) {
 
@@ -66,6 +67,13 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 					add_action( 'admin_menu', array( $this, 'springbot_options_page' ) );
 					add_action( 'pre_user_query', array( 'WooCommerce_Springbot', 'hide_springbot_api_user' ) );
 
+					if ( class_exists( 'Springbot_Settings' ) ) {
+						$springbot_settings = new Springbot_Settings;
+						add_filter( 'woocommerce_settings_tabs_array', array( $springbot_settings, 'add_settings_tab' ), 50 );
+						add_action( 'woocommerce_settings_tabs_settings_tab_springbot',  array( $springbot_settings, 'settings_tab' ) );
+						add_action( 'woocommerce_update_options_settings_tab_springbot', array( $springbot_settings, 'update_settings' ) );
+					}
+
 				} else {
 
 					if ( class_exists( 'Springbot_Footer' ) ) {
@@ -86,9 +94,14 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 							$springbot_cart,
 							'handle_cart_endpoint'
 						) );
-						add_action( 'woocommerce_after_order_notes', array( $springbot_cart, 'show_subscribe_field') );
-						add_action( 'woocommerce_checkout_process', array( $springbot_cart, 'process_subscribe_field') );
+
+						if ( get_option( 'wc_settings_tab_springbot_title', true ) !== 'no' ) {
+							add_action( 'woocommerce_after_order_notes', array( $springbot_cart, 'show_subscribe_field') );
+							add_action( 'woocommerce_checkout_process', array( $springbot_cart, 'process_subscribe_field') );
+						}
+
 					}
+
 				}
 
 			} else {
