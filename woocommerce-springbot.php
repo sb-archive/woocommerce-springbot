@@ -95,7 +95,7 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 							'handle_cart_endpoint'
 						) );
 
-						if ( get_option( 'wc_settings_tab_springbot_title', true ) !== 'no' ) {
+						if ( get_option( 'wc_settings_tab_springbot_subscribe_checkbox', true ) !== 'no' ) {
 							add_action( 'woocommerce_after_order_notes', array( $springbot_cart, 'show_subscribe_field') );
 							add_action( 'woocommerce_checkout_process', array( $springbot_cart, 'process_subscribe_field') );
 						}

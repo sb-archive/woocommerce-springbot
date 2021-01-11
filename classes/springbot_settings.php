@@ -29,7 +29,7 @@ if ( ! class_exists( 'Springbot_Settings' ) ) {
 					'name' => __( 'Checkout Subscribe', 'woocommerce-settings-tab-springbot' ),
 					'type' => 'checkbox',
 					'desc' => __( 'Enable subscribe checkbox on checkout', 'woocommerce-settings-tab-springbot' ),
-					'id'   => 'wc_settings_tab_springbot_title'
+					'id'   => 'wc_settings_tab_springbot_subscribe_checkbox'
 				),
 			);
 			return apply_filters( 'wc_settings_tab_springbot_settings', $settings );
