@@ -198,25 +198,12 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 					} else {
 						$email = $customer->get_email();
 					}
-
-					$cartId = (int) Springbot_Cart::get_cart_id( $hash );
-					self::send_webhook( 'carts', $cartId, false, array(
-						'id'         => $cartId,
-						'hash'       => $hash,
-						'email'      => $email,
-						'first_name' => $customer->get_first_name(),
-						'last_name'  => $customer->get_last_name(),
-						'user_id'    => $customer->get_id(),
-						'is_guest'   => ! $customer->get_email(),
-						'user_agent' => $userAgent,
-						'items'      => $items
-					) );
 					$cartId = (int) Springbot_Cart::get_cart_id( $hash );
 					if ( $cartId > 0 ) {
 						self::send_webhook( 'carts', $cartId, false, array(
 							'id'         => $cartId,
 							'hash'       => $hash,
-							'email'      => $customer->get_email(),
+							'email'      => $email,
 							'first_name' => $customer->get_first_name(),
 							'last_name'  => $customer->get_last_name(),
 							'user_id'    => $customer->get_id(),
