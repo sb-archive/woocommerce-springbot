@@ -3,7 +3,7 @@
  * Plugin Name: Springbot WooCommerce Integration
  * Plugin URI: https://www.springbot.com/
  * Description: Integration plugin between WooCommerce and Springbot
- * Version: 0.0.17
+ * Version: 1.0.2
  * Author: Springbot
  *
  * @package Woocommerce_Springbot

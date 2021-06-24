@@ -39,10 +39,6 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 					echo "  pixel.className = 'sb-pixel';\n";
 					echo "  pixelContainer.appendChild(pixel);\n";
 					echo "  document.body.appendChild(pixelContainer);\n";
-
-					// Set the product_id for our async script to use if needed
-					echo "  var Springbot = Springbot || {};\n";
-					echo "  Springbot.product_id = \"{$product->get_id()}\";\n";
 					echo "});\n";
 
 				}
@@ -50,6 +46,14 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				echo "  })();\n";
 				echo "</script>\n";
 
+				if ( is_product() && ( $product instanceof WC_Product ) ) {
+					// Set the product_id for our async script to use if needed
+					echo "<script data-cfasync=\"false\" type=\"text/javascript\">\n";
+					echo "  var Springbot = Springbot || {};\n";
+					echo "  Springbot.product_id = \"{$product->get_id()}\";\n";
+					echo "</script>\n";
+				}
+				
 				// Load AdRoll conversion tracking on checkout success (aka order received) page
 				if ( is_order_received_page() ) {
 					$order_id = isset( $wp->query_vars['order-received'] ) ? intval( $wp->query_vars['order-received'] ) : null;
