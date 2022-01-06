@@ -56,7 +56,11 @@ if ( ! class_exists( 'Springbot_Footer' ) ) {
 				
 				// Load AdRoll conversion tracking on checkout success (aka order received) page
 				if ( is_order_received_page() ) {
-					$order_id = isset( $wp->query_vars['order-received'] ) ? intval( $wp->query_vars['order-received'] ) : null;
+					if(empty( $_GET['key'] )) {
+						$order_id = isset( $wp->query_vars['order-received'] ) ? intval( $wp->query_vars['order-received'] ) : null;
+					} else {
+						$order_id = wc_get_order_id_by_order_key( $_GET['key'] );
+					}
 					if ( $order_id ) {
 						$order = new WC_Order( $order_id );
 						if ( $order instanceof WC_Order ) {
