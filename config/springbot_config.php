@@ -1,8 +1,8 @@
 <?php
 
-define( 'SPRINGBOT_PLUGIN_VERSION', '1.0.3.400' );
+define( 'SPRINGBOT_PLUGIN_VERSION', '1.0.4' );
 
-define( 'SPRINGBOT_NAME', 'WooCommerce Springbot Integration' );
+define( 'SPRINGBOT_NAME', 'Springbot' );
 define( 'SPRINGBOT_REQUIRED_PHP_VERSION', '5.3' );
 define( 'SPRINGBOT_REQUIRED_WP_VERSION', '3.1' );
 

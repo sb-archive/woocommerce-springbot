@@ -20,9 +20,28 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 
 			add_action( 'admin_menu', array( $this, 'add_sync_page' ) );
 			add_action( 'admin_init', array( $this, 'page_init' ) );
-			add_action( 'admin_notices', array( $this, 'my_error_notice' ) );
+			add_action( 'admin_notices', 'my_error_notice');
 
-			if ( isset( $_POST['springbot']['email'] ) && isset( $_POST['springbot']['password'] ) ) {
+			if ( isset($_POST['springbot']['email']) && isset($_POST['springbot']['password']) ) {
+				
+				$email = sanitize_email($_POST['springbot']['email']);
+				$password = sanitize_text_field($_POST['springbot']['password']);
+			
+				if (!$email) {
+					$redirect = 'admin.php';
+					$redirect = add_query_arg( 'msg', 'bad_email', $redirect );
+					$redirect = add_query_arg( 'page', 'springbot', $redirect );
+					wp_redirect( $redirect );
+					exit;
+				}
+				if (!$password) {
+					$redirect = 'admin.php';
+					$redirect = add_query_arg( 'msg', 'bad_password', $redirect );
+					$redirect = add_query_arg( 'page', 'springbot', $redirect );
+					wp_redirect( $redirect );
+					exit;
+				}
+
 				if ( ! current_user_can( 'activate_plugins' ) ) {
 					$redirect = 'admin.php';
 					$redirect = add_query_arg( 'msg', 'not_admin', $redirect );
@@ -30,7 +49,8 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 					wp_redirect( $redirect );
 					exit;
 				} else {
-					$code = $activation->register( $_POST['springbot']['email'], $_POST['springbot']['password'] );
+					$password = strtr(base64_encode(openssl_encrypt($password, 'aes-128-cbc', hash('sha256', 'a1a6e1tt3h1aerg8613a1rg61Sgg1h61r', true))), '+/=', '-_,');
+					$code = $activation->register( $email, $password );
 					if ( $code >= 400 ) {
 						$redirect = 'admin.php';
 						$redirect = add_query_arg( 'msg', $code, $redirect );
@@ -71,8 +91,9 @@ if ( ! class_exists( 'Springbot_Options' ) ) {
 		 */
 		function my_error_notice() {
 			if ( isset( $_GET['msg'] ) ) {
-				if ( isset( $this->messages[ $_GET['msg'] ] ) ) {
-					$message = $this->messages[ $_GET['msg'] ];
+				$msg = sanitize_text_field($_GET['msg']);
+				if ( isset( $this->messages[ $msg ] ) ) {
+					$message = $this->messages[ $msg ];
 				} else {
 					$message = $this->messages['default'];
 				}

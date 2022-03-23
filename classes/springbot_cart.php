@@ -12,7 +12,7 @@ if ( ! class_exists( 'Springbot_Cart' ) ) {
 		 * @return mixed
 		 */
 		public function handle_cart_endpoint( $permalink ) {
-			$uri   = $_SERVER['REQUEST_URI'];
+			$uri   = esc_url_raw($_SERVER['REQUEST_URI']);
 			$parts = parse_url( $uri );
 			$path  = trim( str_replace( 'index.php', '', $parts['path'] ), '/' );
 
@@ -46,13 +46,13 @@ if ( ! class_exists( 'Springbot_Cart' ) ) {
 		 * @return void
 		 */
 		function process_subscribe_field() {
-			if ( $_POST['newsletter_subscribe'] ) {
-				$email = $_POST['billing_email'];
+			if ( sanitize_text_field($_POST['newsletter_subscribe']) ) {
+				$email = sanitize_email($_POST['billing_email']);
 				if ( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
 					Springbot_Webhooks::send_webhook( 'subscribers', 0, false, array(
 						'email' => $email,
-						'first_name' => $_POST['billing_first_name'],
-						'last_name' => $_POST['billing_last_name'],
+						'first_name' => sanitize_text_field($_POST['billing_first_name']),
+						'last_name' => sanitize_text_field($_POST['billing_last_name']),
 					) );
 				}
 			}
@@ -67,11 +67,11 @@ if ( ! class_exists( 'Springbot_Cart' ) ) {
 		 */
 		public static function get_cart_id( $hash ) {
 			if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-				$userAgent = $_SERVER['HTTP_USER_AGENT'];
+				$userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 				setcookie( 'sb_cart_user_agent', base64_encode( $userAgent ), 0, '/' );
 			}
 			if ( isset( $_COOKIE['sb_cart_id'] ) && is_numeric( $_COOKIE['sb_cart_id'] ) ) {
-				$cartId = $_COOKIE['sb_cart_id'];
+				$cartId = sanitize_text_field($_COOKIE['sb_cart_id']);
 			} else {
 				// Create a unique ID for this cart and save it
 				$cartId = self::token_to_dec( rand() . $hash . rand() );
