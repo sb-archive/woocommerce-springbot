@@ -12,7 +12,7 @@ if ( ! class_exists( 'Springbot_Redirect' ) ) {
 		 * @return mixed
 		 */
 		public function handle_redirect_posts( $permalink ) {
-			$uri   = $_SERVER['REQUEST_URI'];
+			$uri   = esc_url_raw($_SERVER['REQUEST_URI']);
 			$parts = parse_url( $uri );
 			$path  = trim( str_replace( 'index.php', '', $parts['path'] ), '/' );
 

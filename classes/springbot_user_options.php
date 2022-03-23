@@ -131,13 +131,13 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
             do_settings_sections( 'springbot-sync-options' );
             echo '<h2>Springbot API Secret/Key</h2>';
             echo '<p>The Springbot sync process is currently using the WP_USER <b>' . SPRINGBOT_WP_USER . '</b>.<br> You can modify which user is being used under config/springbot_config.php<br>';
-            echo '<input type="text" id="consumer-secret" name="springbot[consumer-secret]" value="' . $this->secret . '"  readonly="readonly" /><br>';
+            echo '<input type="text" id="consumer-secret" name="springbot[consumer-secret]" value="' . _e($this->secret) . '"  readonly="readonly" /><br>';
             echo '<input type="submit" id="re_create_auth" name="springbot[re-create]" value="Re-Create API Authorization"/><br>';
             submit_button();
             echo '</form>';
             echo '</div>';
             if (!empty($this->newKey)) {
-                echo "<p>Your new consumer_key will be <b>" . $this->newKey . "</b></p>";
+                echo "<p>Your new consumer_key will be <b>" . _e($this->newKey) . "</b></p>";
             }
         }
 
@@ -169,7 +169,8 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
             if ( $user ) {
                 $userId = $user->ID;
                 $table = $wpdb->prefix . 'woocommerce_api_keys';
-                $row = $wpdb->get_row( 'SELECT * from ' . $table . ' WHERE user_id = ' .  $userId . ';', ARRAY_A );
+                $sql = $wpdb->prepare( "SELECT * from %s WHERE user_id = %d", $table, $userId );
+                $row = $wpdb->get_row($sql, ARRAY_A );
                 $this->securityKey = get_user_meta( $userId, 'springbot_security_token', true );
                 $this->guid = get_user_meta( $userId, 'springbot_store_guid', true );
                 $this->storeId = get_user_meta( $userId, 'springbot_store_id', true );
@@ -231,21 +232,21 @@ if ( ! class_exists( 'Springbot_User_Options' ) ) {
          * Get the settings option array and print one of its values
          */
         public function guid_callback() {
-            echo '<input type="text" id="guid" name="springbot[guid]" value="' . $this->guid . '" />';
+            echo '<input type="text" id="guid" name="springbot[guid]" value="' . _e($this->guid) . '" />';
         }
 
         /**
          * Get the settings option array and print one of its values
          */
         public function storeid_callback() {
-            echo '<input type="text" id="store-id" name="springbot[store-id]" value="' . $this->storeId . '" />';
+            echo '<input type="text" id="store-id" name="springbot[store-id]" value="' . esc_attr($this->storeId) . '" />';
         }
 
         /**
          * Get the settings option array and print one of its values
          */
         public function securitykey_callback() {
-            echo '<input type="text" id="security-key" name="springbot[security-key]" value="' . $this->securityKey . '" />';
+            echo '<input type="text" id="security-key" name="springbot[security-key]" value="' . _e($this->securityKey) . '" />';
         }
 
     }

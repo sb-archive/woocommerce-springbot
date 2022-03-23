@@ -49,31 +49,31 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 
 			// Save the current user agent used to complete the order
 			if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-				$order->update_meta_data( '_sb_order_user_agent', $_SERVER['HTTP_USER_AGENT'] );
+				$order->update_meta_data( '_sb_order_user_agent', sanitize_text_field($_SERVER['HTTP_USER_AGENT']) );
 			}
 
 			// Save any redirect IDs to the order. Used for Springbot attribution
 			if ( isset( $_COOKIE['springbot_redirect_queue'] ) ) {
-				$order->update_meta_data( '_sb_redirect_queue', $_COOKIE['springbot_redirect_queue'] );
+				$order->update_meta_data( '_sb_redirect_queue', sanitize_text_field($_COOKIE['springbot_redirect_queue']) );
 			}
 
 			// Associate the cart ID to the order so we can associate the two in Springbot, then unset it
 			if ( isset( $_COOKIE['sb_cart_id'] ) && ( $_COOKIE['sb_cart_id'] > 0 ) ) {
-				$order->update_meta_data( '_sb_cart_id', $_COOKIE['sb_cart_id'] );
+				$order->update_meta_data( '_sb_cart_id', sanitize_text_field($_COOKIE['sb_cart_id']) );
 				unset( $_COOKIE['sb_cart_id'] );
 				setcookie( 'sb_cart_id', null, - 1, '/' );
 			}
 
 			// Associate the user agent used on the cart to the order
 			if ( isset( $_COOKIE['sb_cart_user_agent'] ) ) {
-				$order->update_meta_data( '_sb_cart_user_agent', base64_decode( $_COOKIE['sb_cart_user_agent'] ) );
+				$order->update_meta_data( '_sb_cart_user_agent', sanitize_text_field( base64_decode($_COOKIE['sb_cart_user_agent']) ) );
 				unset( $_COOKIE['sb_cart_user_agent'] );
 				setcookie( 'sb_cart_user_agent', null, - 1, '/' );
 			}
 
 			// Associate the email cookie to the order
 			if ( isset( $_COOKIE['sb_email'] ) ) {
-				$order->update_meta_data( '_sb_email', $_COOKIE['sb_email'] );
+				$order->update_meta_data( '_sb_email', sanitize_email($_COOKIE['sb_email']) );
 			}
 		}
 
@@ -185,13 +185,13 @@ if ( ! class_exists( 'Springbot_Webhooks' ) ) {
 				if ( $customer instanceof WC_Customer ) {
 					$userAgent = '';
 					if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-						$userAgent = $_SERVER['HTTP_USER_AGENT'];
+						$userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 						setcookie( 'sb_cart_user_agent', base64_encode( $userAgent ), 0, '/' );
 					}
 
 					if ( empty( $customer->get_email() ) ) {
 						if ( isset( $_COOKIE['sb_email'] ) ) {
-							$email = $_COOKIE['sb_email'];
+							$email = sanitize_email($_COOKIE['sb_email']);
 						} else {
 							$email = '';
 						}

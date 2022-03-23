@@ -12,7 +12,7 @@ if ( ! class_exists( 'Springbot_Product' ) ) {
          * @return mixed
          */
         public function handle_product_endpoint( $permalink ) {
-            $uri   = $_SERVER['REQUEST_URI'];
+            $uri   = esc_url_raw($_SERVER['REQUEST_URI']);
             $parts = parse_url( $uri );
             $path  = trim( str_replace( 'index.php', '', $parts['path'] ), '/' );
 

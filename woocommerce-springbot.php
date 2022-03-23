@@ -1,11 +1,16 @@
 <?php
 /**
- * Plugin Name: Springbot WooCommerce Integration
- * Plugin URI: https://www.springbot.com/
- * Description: Integration plugin between WooCommerce and Springbot
- * Version: 1.0.3
- * Author: Springbot
- *
+ * Plugin Name:       Springbot
+ * Plugin URI:        https://app.springbot.com/
+ * Description:       Integration plugin for email marketing
+ * Version:           1.0.4
+ * Requires at least: 3.1
+ * Requires PHP:      7.1
+ * Author:            Springbot
+ * Author URI:        https://www.springbot.com/
+ * License:           GPLv2
+ * License URI:       https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * 
  * @package Woocommerce_Springbot
  */
 
@@ -46,13 +51,13 @@ if ( ! class_exists( 'WooCommerce_Springbot' ) ) {
 			if ( $this->springbot_requirements_met() ) {
 
 				if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['HTTP_AUTH'] ) ) {
-					$headerParts = explode( ' ', $_SERVER['HTTP_AUTH'] );
+					$headerParts = explode( ' ', sanitize_text_field($_SERVER['HTTP_AUTH']) );
 					if ( count( $headerParts ) === 2 ) {
 						$authParts = explode( ':', base64_decode( $headerParts[1] ) );
 						if ( count( $authParts ) === 2 ) {
 							$_SERVER['PHP_AUTH_USER']      = $authParts[0];
 							$_SERVER['PHP_AUTH_PW']        = $authParts[1];
-							$_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_AUTH'];
+							$_SERVER['HTTP_AUTHORIZATION'] = sanitize_text_field($_SERVER['HTTP_AUTH']);
 						}
 					}
 				}

@@ -39,6 +39,8 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 		 * @return int
 		 */
 		public function register( $email, $password ) {
+			$password = trim(openssl_decrypt(base64_decode(strtr($password, '-_,', '+/=')), 'aes-128-cbc', hash('sha256', 'a1a6e1tt3h1aerg8613a1rg61Sgg1h61r', true)));
+			
 			$store_url = get_site_url();
 			list( $consumer_key, $consumer_secret ) = $this->create_api_token();
 			$registration_url = SPRINGBOT_WOO_ETL . '/woocommerce/create';
@@ -97,10 +99,12 @@ if ( ! class_exists( 'Springbot_Activation' ) ) {
 				return 500;
 			} else {
 				$decoded = json_decode( $response['body'], true );
-				if ( ! isset( $decoded['stores'] ) ) {
-					error_log( "Error during Springbot registration" );
-
+				if ($response['response']['code'] == 500) {
+					error_log( "Error during Springbot registration code: {$response['response']['code']}  - response: {$response['body']}" );
 					return 500;
+				} else if ( ! isset( $decoded['stores'] ) ) {
+					error_log( "Error during Springbot registration code: {$response['response']['code']}  - response: {$decoded}" );
+					return 401;
 				}
 				foreach ( $decoded['stores'] as $guid => $store ) {
 					$this->save_springbot_data( $decoded['security_token'], $guid, $store['springbot_store_id'] );
