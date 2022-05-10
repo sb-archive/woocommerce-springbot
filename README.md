@@ -10,7 +10,7 @@ This extension connects your WooCommerce store to Springbot's marketing platform
 
 ### Requirements
 * WooCommerce >= 3.0
-* PHP >= 5.3
+* PHP >= 7.1
 
 ### Installation
 
